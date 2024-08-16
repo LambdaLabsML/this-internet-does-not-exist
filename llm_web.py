@@ -292,7 +292,7 @@ def prepend_current_domain(html_string, domain=""):
     for script in script_tags:
         if script.string:  # Ensure the script tag has text content
             # Replace http:// and https:// with abc://
-            updated_script_content = re.sub(r'https?://', f'{BASE_URL}/https://', script.string)
+            updated_script_content = re.sub(r'https?://', f'/https://', script.string)
             script.string.replace_with(updated_script_content)
 
     return str(soup)
@@ -341,12 +341,28 @@ app = Flask(__name__)
 @app.route("/<path:path>", methods = ['POST', 'GET'])
 def catch_all(path=""):
 
+    # Get the query string arguments and fragment
+    query_string = request.query_string.decode('utf-8')
+    fragment = request.url.split('#')[1] if '#' in request.url else ''
+
+    # Reconstruct the URL without the domain
+    url = path
+    if query_string:
+        url += '?' + query_string
+    if fragment:
+        url += '#' + fragment
+
     # divide url into domain and path
-    url = request.url.replace(BASE_URL,"").replace("http://", "").replace("https://", "")
+    url = url.replace("https://", "").replace("http://", "")
     if "/" in url:
         domain, url = url.split("/", 1)
     else:
         domain, url = url, ""
+
+    # show index
+    print(domain, url)
+    if path == "":
+        return index_html, 200, {"Content-Type": "text/html"}
 
     # reconstruct the "virtual" URL
     full_url = f"{domain}/{url}"
