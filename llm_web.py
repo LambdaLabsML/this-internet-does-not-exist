@@ -1,5 +1,6 @@
 # Use: flask --app main --debug run
 
+import html
 import hashlib
 import json
 import mimetypes
@@ -411,6 +412,11 @@ def catch_all(path=""):
 
     print(content_type)
     print(response_data)
+
+
+    # unescape in case of javascript files
+    if content_type == "text/javascript":
+        response_data = html.unescape(response_data)
 
     # save cache
     save_cached(full_url, response_data, content_type)
