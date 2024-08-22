@@ -184,6 +184,27 @@ def catch_all(path=""):
     if content_type == "text/javascript":
         response_data = html.unescape(response_data)
 
+    # Add loadAllSections script before closing body tag
+    if content_type == "text/html":
+        response_data = response_data.replace(
+            "</body>",
+            """
+            <script>
+                const loadAllSections = () => {
+                    document.querySelectorAll('div[data-url]').forEach(div => {
+                        div.innerHTML = '<span style="display:inline-block; opacity:0.5;">Loading content...</span>';
+                        fetch(div.dataset.url)
+                            .then(res => res.text())
+                            .then(html => div.outerHTML = html)
+                            .catch(console.error);
+                    });
+                };
+                document.addEventListener("DOMContentLoaded", loadAllSections);
+            </script>
+            </body>
+            """
+        )
+
     # save cache
     save_cached(full_url, response_data, content_type)
 
