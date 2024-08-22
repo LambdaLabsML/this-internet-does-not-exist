@@ -25,36 +25,36 @@ Output: <!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Obelus - Wikipedia</title>
     <meta name="description" content="The obelus is a symbol consisting of a line with dots above and below, used historically for division or subtraction.">
-    <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=body,main,h1,h2,h3" />
-    <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=header,nav,nav>ul,nav>ul>li" />
+    <link rel="stylesheet" data-dynamic-content-url="/style.css?type=flex&patterns=body,main,h1,h2,h3" />
+    <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=header,header nav,header nav ul,header nav ul li" />
     <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=a,a:hover,a.button" />
     <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=table,th,td" />
-    <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=url,footer,.references" />
+    <link rel="stylesheet" data-dynamic-content-url="/style.css?type=flex&patterns=url,footer,.see-also,.reference,footer a" />
 </head>
 <body onload="loadAllSections()">
-    <header data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?query_section=wikipedia_header"></header>
+    <header data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?query_section=wikipedia_header_with_header_image&nav_selector=nav a"></header>
 
     <main>
         <h2 id="introduction">Introduction</h2>
-        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=introduction"></div>
+        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=introduction&text_type=text&link_selector=a"></div>
 
         <h2 id="history">History</h2>
-        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=history"></div>
+        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=history&text_type=text&link_selector=a"></div>
 
         <h2 id="modern-use">Modern Use</h2>
-        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=modern-use"></div>
+        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=modern-use&text_type=text&link_selector=a"></div>
         
         <h2 id="similar-symbols">Similar Symbols</h2>
-        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=similar-symbols"></div>
+        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=similar-symbols&text_type=text&link_selector=a"></div>
 
         <h2 id="see-also">See Also</h2>
-        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=see-also"></div>
+        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=see-also&text_type=text&link_selector=a&list_selector=.see-also"></div>
 
         <h2 id="references">References</h2>
-        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=references"></div>
+        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=references&text_type=text&link_selector=a&reference_selector=.reference"></div>
     </main>
 
-    <footer data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?general_layout?query_section=footer"></footer>
+    <footer data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?general_layout?query_section=footer&link_selector=footer a"></footer>
 </body>
 </html>
 
