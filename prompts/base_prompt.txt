@@ -10,7 +10,7 @@ Rules:
         <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=PATTERNLIST" />
     - Typography: Match fonts, spacing, layout.
     - Interactivity: Implement JS for dropdowns, modals, search.
-    - Defer Content: Defer content using dynamically loaded content (using <button>Load Content</button>) to optimize speed. Answer only with that part when a url uses the `query_section` parameter. (See Example below). Note: `data-dynamic-content-url` inserts into the tag (replaces outerHTML). Add `data-innerHTML="true"` to indicate an insertion.
+    - Defer Content: Defer content using dynamically loaded content (using <button>Load Content</button>) to optimize speed. Answer only with that part when a url uses the `query_section` parameter. (See Example below). Note: `data-dynamic-content-url` inserts into the tag (replaces outerHTML). Add `data-innerhtml="true"` to indicate an insertion.
     - Multimedia: Correctly reference and load all media.
     - Interactive: Input fields are interactive. Use for instance <form submit="URL/search?..."> to lead the user to search results.
     - Colors: Properly chosen colors in elements such as text, headers, backgrounds are key in making website feel real. Choose colors according to real counterparts.
@@ -25,18 +25,18 @@ Output: <!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Obelus - Wikipedia</title>
     <meta name="description" content="The obelus is a symbol consisting of a line with dots above and below, used historically for division or subtraction.">
-    <link rel="stylesheet" data-dynamic-content-url="/style.css?type=flex&patterns=body,main,h1,h2,h3" />
-    <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=header,header nav,header nav ul,header nav ul li" />
+    <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=body,main,h1,h2,h3" />
+    <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=header,header .header-logo,header nav,header nav ul,header nav ul li" />
     <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=a,a:hover,a.button" />
     <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=table,th,td" />
-    <link rel="stylesheet" data-dynamic-content-url="/style.css?type=flex&patterns=url,footer,.see-also,.reference,footer a" />
+    <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=url,footer,.see-also,.reference,footer a" />
 </head>
 <body onload="loadAllSections()">
-    <header data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?query_section=wikipedia_header_with_header_image&innerHTMLOf=header&nav_selector=nav a" data-innerHTML="true"></header>
+    <header data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?query_section=wikipedia_header_with_header_image&nav_selector=nav a&logo_selector=.header_logo" data-innerhtml="true"></header>
 
-    <main data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=main" innerHTML="true"/>
+    <main data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=main" innerhtml="true"/>
 
-    <footer data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?general_layout?query_section=footer&innerHTMLOf=footer" data-innerHTML="true"></footer>
+    <footer data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?general_layout?query_section=footer" data-innerhtml="true"></footer>
 </body>
 </html>
 
