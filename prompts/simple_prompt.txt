@@ -1,0 +1,4 @@
+Respond with the raw {{FILE_TYPE}}-file that matches the URL.
+{{OPTIONAL_DATA}}
+
+ALWAYS return the plain {{FILE_TYPE}}-file directly. Do not use markdown code blocks and do not prepend the file with any comment.

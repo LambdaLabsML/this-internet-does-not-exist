@@ -20,7 +20,7 @@ def parse_arguments():
     parser.add_argument("--persistent_cache", type=bool, default=True, help="Enable or disable persistent cache")
     parser.add_argument("--model_name", type=str, default="gpt-4o", help="Model name to use for the OpenAI client")
     parser.add_argument("--base_url", type=str, default="http://localhost:5000/", help="Base URL for the server")
-    parser.add_argument("--base_prompt", type=str, default="base_prompt.txt", help="Path to the base prompt file")
+    parser.add_argument("--base_prompt", type=str, default="prompts/base_prompt.txt", help="Path to the base prompt file")
     return parser.parse_args()
 
 args = parse_arguments()
