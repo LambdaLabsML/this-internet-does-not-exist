@@ -275,7 +275,7 @@ Output: <ol class="references">
 
 def prepend_current_domain(html_string, domain=""):
     soup = BeautifulSoup(html_string, 'html.parser')
-    tags_attributes = {'a': 'href', 'link': 'href', 'script': 'src', 'form': 'action', 'div': 'data-url'}
+    tags_attributes = ['href', 'src', 'action', 'data-url']
 
     def prepend_to_attribute(tag, attribute):
         value = tag.get(attribute)
@@ -285,8 +285,10 @@ def prepend_current_domain(html_string, domain=""):
             else:
                 tag[attribute] = f"/{value}"
 
-    for tag, attr in tags_attributes.items():
-        for t in soup.find_all(tag, **{attr: True}):
+    for attr in tags_attributes:
+        for t in soup.find_all(attrs={attr: True}):
+            if t.name == "img":
+                continue
             prepend_to_attribute(t, attr)
 
     script_tags = soup.find_all('script')
