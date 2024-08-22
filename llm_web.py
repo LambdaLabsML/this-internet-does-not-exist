@@ -218,7 +218,26 @@ def catch_all(path=""):
                         }
                     });
                 };
-                document.addEventListener("DOMContentLoaded", loadAllSections);
+                const observer = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        if (mutation.type === 'childList') {
+                            mutation.addedNodes.forEach((node) => {
+                                if (node.nodeType === 1 && node.hasAttribute('data-dynamic-content-url')) {
+                                    loadAllSections();
+                                }
+                            });
+                        }
+                    });
+                });
+
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true
+                });
+
+                document.addEventListener("DOMContentLoaded", () => {
+                    loadAllSections();
+                });
             </script>
             </body>
             """
