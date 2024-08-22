@@ -191,12 +191,24 @@ def catch_all(path=""):
             """
             <script>
                 const loadAllSections = () => {
-                    document.querySelectorAll('[data-dynamic-content-url]').forEach(div => {
-                        div.innerHTML = '<span style="display:inline-block; opacity:0.5;">Loading content...</span>';
-                        fetch(div.dataset.dynamicContentUrl)
-                            .then(res => res.text())
-                            .then(html => div.outerHTML = html)
-                            .catch(console.error);
+                    document.querySelectorAll('[data-dynamic-content-url]').forEach(element => {
+                        if (element.tagName.toLowerCase() === 'link' && element.rel === 'stylesheet') {
+                            fetch(element.dataset.dynamicContentUrl)
+                                .then(res => res.text())
+                                .then(css => {
+                                    const style = document.createElement('style');
+                                    style.textContent = css;
+                                    document.head.appendChild(style);
+                                    element.remove();
+                                })
+                                .catch(console.error);
+                        } else {
+                            element.innerHTML = '<span style="display:inline-block; opacity:0.5;">Loading content...</span>';
+                            fetch(element.dataset.dynamicContentUrl)
+                                .then(res => res.text())
+                                .then(html => element.outerHTML = html)
+                                .catch(console.error);
+                        }
                     });
                 };
                 document.addEventListener("DOMContentLoaded", loadAllSections);

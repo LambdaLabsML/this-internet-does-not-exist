@@ -6,15 +6,8 @@ Rules:
 2. Generate a dense and authentic website:
     - Structure: Use HTML to reflect clear hierarchy (headings, lists, tables).
     - Links: Include extensive internal/external hyperlinks, woven into text whenever appropriate. Use <a class="button" href="..."> to use CTA button/links.
-    - Styling: Use multiple smaller CSS files to optimize creation time. Use the following script to load styles dynamically:
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var link = document.createElement("link");
-            link.rel = "stylesheet";
-            link.href = "URL/style.css?patterns=PATTERNLIST";
-            document.head.appendChild(link);
-        });
-    </script>
+    - Styling: Use multiple smaller CSS files to optimize creation time. Use the following link-tag to load styles dynamically:
+        <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=PATTERNLIST" />
     - Typography: Match fonts, spacing, layout.
     - Interactivity: Implement JS for dropdowns, modals, search.
     - Defer Content: Defer content using dynamically loaded content (using <button>Load Content</button>) to optimize speed. Answer only with that part when a url uses the `query_section` parameter. (See Example below)
@@ -32,25 +25,11 @@ Output: <!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Obelus - Wikipedia</title>
     <meta name="description" content="The obelus is a symbol consisting of a line with dots above and below, used historically for division or subtraction.">
-    <script>
-        document.addEventListener("DOMContentLoaded", async function() {
-            const styles = [
-                { href: "URL/style.css?patterns=body&pattern_description=body_styles" },
-                { href: "URL/style.css?patterns=a,a:hover,a.button" },
-                { href: "URL/style.css?patterns=header,h1,main,h2" },
-                { href: "URL/style.css?patterns=table,th,td" },
-                { href: "URL/style.css?patterns=url,footer,.references" }
-            ];
-
-            for (const style of styles) {
-                const link = document.createElement("link");
-                link.rel = "stylesheet";
-                link.href = style.href;
-                document.head.appendChild(link);
-                await new Promise(resolve => link.onload = resolve);
-            }
-        });
-    </script>
+    <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=body,main,h1,h2,h3" />
+    <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=header,nav,nav>ul,nav>ul>li" />
+    <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=a,a:hover,a.button" />
+    <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=table,th,td" />
+    <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=url,footer,.references" />
 </head>
 <body onload="loadAllSections()">
     <header data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?query_section=wikipedia_header"></header>
