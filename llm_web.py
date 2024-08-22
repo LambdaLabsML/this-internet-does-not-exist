@@ -1,5 +1,6 @@
 # Use: flask --app main --debug run
 
+import argparse
 import html
 import hashlib
 import json
@@ -12,11 +13,21 @@ from flask import Flask, request
 from openai import OpenAI
 
 
-BASE_URL = "http://localhost:5000/"
-API_URL = None
-API_KEY = None
-PERSISTENT_CACHE = True
-MODEL_NAME = "gpt-4o"
+def parse_arguments():
+    parser = argparse.ArgumentParser(description="LLM Web Server")
+    parser.add_argument("--api_url", type=str, default=None, help="API URL for the OpenAI client")
+    parser.add_argument("--api_key", type=str, help="API Key for the OpenAI client")
+    parser.add_argument("--persistent_cache", type=bool, default=True, help="Enable or disable persistent cache")
+    parser.add_argument("--model_name", type=str, default="gpt-4o", help="Model name to use for the OpenAI client")
+    parser.add_argument("--base_url", type=str, default="http://localhost:5000/", help="Base URL for the server")
+    return parser.parse_args()
+
+args = parse_arguments()
+API_URL = args.api_url
+API_KEY = args.api_key
+PERSISTENT_CACHE = args.persistent_cache
+MODEL_NAME = args.model_name
+BASE_URL = args.base_url
 with open("base_prompt.txt", "r") as file:
     BASE_PROMPT = file.read()
 with open("index.html", "r") as file:
@@ -92,6 +103,10 @@ def save_cached(url, content, content_type):
 # ------------ #
 
 client = OpenAI(api_key=API_KEY, base_url=API_URL)
+app = Flask(__name__)
+
+if __name__ == "__main__":
+    app.run()
 app = Flask(__name__)
 
 @app.route("/", methods = ['POST', 'GET'])
