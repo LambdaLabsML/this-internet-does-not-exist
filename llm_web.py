@@ -19,6 +19,7 @@ def parse_arguments():
     parser.add_argument("--api_key", type=str, help="API Key for the OpenAI client")
     parser.add_argument("--persistent_cache", type=bool, default=True, help="Enable or disable persistent cache")
     parser.add_argument("--model_name", type=str, default="gpt-4o", help="Model name to use for the OpenAI client")
+    parser.add_argument("--no-persistent_cache", action='store_true', help="Disable persistent cache")
     parser.add_argument("--base_url", type=str, default="http://localhost:5000/", help="Base URL for the server")
     parser.add_argument("--base_prompt", type=str, default="prompts/base_prompt.txt", help="Path to the base prompt file")
     return parser.parse_args()
@@ -70,7 +71,7 @@ def prepend_current_domain(html_string, domain=""):
 # ------- #
 
 # Define the temporary directory for caching
-cache_dir = tempfile.gettempdir() if args.persistent_cache else tempfile.mkdtemp()
+cache_dir = tempfile.gettempdir() if args.persistent_cache and not args.no_persistent_cache else tempfile.mkdtemp()
 print("Cache Dir:", cache_dir)
 
 def _get_cache_file_path(url):
