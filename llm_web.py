@@ -23,15 +23,13 @@ def parse_arguments():
     return parser.parse_args()
 
 args = parse_arguments()
-API_URL = args.api_url
-API_KEY = args.api_key
-PERSISTENT_CACHE = args.persistent_cache
-MODEL_NAME = args.model_name
-BASE_URL = args.base_url
+client = OpenAI(api_key=args.api_key, base_url=args.api_url)
 with open("base_prompt.txt", "r") as file:
     BASE_PROMPT = file.read()
 with open("index.html", "r") as file:
     INDEX_HTML = file.read()
+
+
 
 
 # ------ #
@@ -71,7 +69,7 @@ def prepend_current_domain(html_string, domain=""):
 # ------- #
 
 # Define the temporary directory for caching
-cache_dir = tempfile.gettempdir() if PERSISTENT_CACHE else tempfile.mkdtemp()
+cache_dir = tempfile.gettempdir() if args.persistent_cache else tempfile.mkdtemp()
 print("Cache Dir:", cache_dir)
 
 def _get_cache_file_path(url):
@@ -101,13 +99,6 @@ def save_cached(url, content, content_type):
 # ------------ #
 # Flask Server #
 # ------------ #
-
-client = OpenAI(api_key=API_KEY, base_url=API_URL)
-app = Flask(__name__)
-
-if __name__ == "__main__":
-    app.run()
-app = Flask(__name__)
 
 @app.route("/", methods = ['POST', 'GET'])
 @app.route("/<path:path>", methods = ['POST', 'GET'])
@@ -164,7 +155,7 @@ def catch_all(path=""):
 
     # api call
     response = client.chat.completions.create(
-        model=MODEL_NAME,
+        model=args.model_name,
         messages=[{"role": "system", "content": prompt}, {"role": "user", "content": full_url}],
         temperature=0.0,
         max_tokens=4096,
@@ -193,3 +184,9 @@ def catch_all(path=""):
     save_cached(full_url, response_data, content_type)
 
     return response_data, 200, {'Content-Type': content_type}
+
+
+
+if __name__ == "__main__":
+    app = Flask(__name__)
+    app.run()
