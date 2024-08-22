@@ -10,14 +10,14 @@ Rules:
         <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=PATTERNLIST" />
     - Typography: Match fonts, spacing, layout.
     - Interactivity: Implement JS for dropdowns, modals, search.
-    - Defer Content: Defer content using dynamically loaded content (using <button>Load Content</button>) to optimize speed. Answer only with that part when a url uses the `query_section` parameter. (See Example below). Note: `data-dynamic-content-url` inserts into the tag (replaces innerHTML).
+    - Defer Content: Defer content using dynamically loaded content (using <button>Load Content</button>) to optimize speed. Answer only with that part when a url uses the `query_section` parameter. (See Example below). Note: `data-dynamic-content-url` inserts into the tag (replaces outerHTML). Add `data-innerHTML="true"` to indicate an insertion.
     - Multimedia: Correctly reference and load all media.
     - Interactive: Input fields are interactive. Use for instance <form submit="URL/search?..."> to lead the user to search results.
     - Colors: Properly chosen colors in elements such as text, headers, backgrounds are key in making website feel real. Choose colors according to real counterparts.
 
 
 Example:
-Input: en.wikipedia.org/wiki/Obelus
+Input: https://en.wikipedia.org/wiki/Obelus
 Output: <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,33 +32,35 @@ Output: <!DOCTYPE html>
     <link rel="stylesheet" data-dynamic-content-url="/style.css?type=flex&patterns=url,footer,.see-also,.reference,footer a" />
 </head>
 <body onload="loadAllSections()">
-    <header data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?query_section=wikipedia_header_with_header_image&nav_selector=nav a" data-outerHTML="true"></header>
+    <header data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?query_section=wikipedia_header_with_header_image&innerHTMLOf=header&nav_selector=nav a" data-innerHTML="true"></header>
 
-    <main>
-        <h2 id="introduction">Introduction</h2>
-        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=introduction&text_type=text"></div>
+    <main data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=main" innerHTML="true"/>
 
-        <h2 id="history">History</h2>
-        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=history&text_type=text"></div>
-
-        <h2 id="modern-use">Modern Use</h2>
-        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=modern-use&text_type=text"></div>
-        
-        <h2 id="similar-symbols">Similar Symbols</h2>
-        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=similar-symbols&text_type=text"></div>
-
-        <h2 id="see-also">See Also</h2>
-        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=see-also&text_type=text&list_selector=.see-also"></div>
-
-        <h2 id="references">References</h2>
-        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=references&text_type=text&reference_selector=.reference"></div>
-    </main>
-
-    <footer data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?general_layout?query_section=footer" data-outerHTML="true"></footer>
+    <footer data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?general_layout?query_section=footer&innerHTMLOf=footer" data-innerHTML="true"></footer>
 </body>
 </html>
 
-Input: en.wikipedia.org/style.css?patterns=body,a,a:hover,header,h1,main,h2,table,th,td,url,footer,.references
+
+Input: https://en.wikipedia.org/api/general_layout?query_section=main
+Output: <h2 id="introduction">Introduction</h2>
+<div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=introduction&text_type=text"></div>
+
+<h2 id="history">History</h2>
+<div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=history&text_type=text"></div>
+
+<h2 id="modern-use">Modern Use</h2>
+<div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=modern-use&text_type=text"></div>
+
+<h2 id="similar-symbols">Similar Symbols</h2>
+<div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=similar-symbols&text_type=text"></div>
+
+<h2 id="see-also">See Also</h2>
+<div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=see-also&text_type=text&list_selector=.see-also"></div>
+
+<h2 id="references">References</h2>
+<div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=references&text_type=text&reference_selector=.reference"></div>
+
+Input: https://en.wikipedia.org/style.css?patterns=body,a,a:hover,header,h1,main,h2,table,th,td,url,footer,.references
 Output: body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -161,7 +163,7 @@ footer {
 }
 
 
-Input: en.wikipedia.org/Obulus?query_section=introduction
+Input: https://en.wikipedia.org/Obulus?query_section=introduction
 Output: <p>The <strong>obelus</strong> (<a href="https://en.wikipedia.org/wiki/Division_sign">÷</a>) is a symbol consisting of a line with a dot above and a dot below. It is primarily used in <a href="https://en.wikipedia.org/wiki/Mathematics">mathematics</a> to represent <a href="https://en.wikipedia.org/wiki/Division_(mathematics)">division</a> or, less commonly, <a href="https://en.wikipedia.org/wiki/Subtraction">subtraction</a>. The symbol has a rich history that spans from <a href="https://en.wikipedia.org/wiki/Ancient_Greece">Ancient Greece</a> to modern mathematical notation.</p>
 
 Input: en.wikipedia.org/Obulus?query_section=history
@@ -174,7 +176,7 @@ Output: <p>Today, the obelus is primarily used in <a href="https://en.wikipedia.
 
 <p>The obelus also appears in other contexts, such as in certain programming languages where it may be used to represent division operations. However, these instances are less common, as the majority of modern programming languages prefer the slash for division<sup>[5]</sup>.</p>
 
-Input: en.wikipedia.org/Obulus?query_section=similar-symbols
+Input: https://en.wikipedia.org/Obulus?query_section=similar-symbols
 Output: <p>The obelus is often confused with other symbols used in mathematics and textual notation. The table below highlights some of these similar symbols:</p>
 
 <table>
@@ -229,7 +231,7 @@ Output: <ul>
     <li><a href="https://en.wikipedia.org/wiki/Minus_sign">Minus sign</a></li>
 </ul>
 
-Input: en.wikipedia.org/Obulus?query_section=references
+Input: https://en.wikipedia.org/Obulus?query_section=references
 Output: <ol class="references">
     <li><a href="https://en.wikipedia.org/wiki/Aristarchus_of_Samos">Aristarchus of Samos - Wikipedia</a></li>
     <li>Rahn, J. "Teutsche Algebra", Zurich, 1659.</li>
