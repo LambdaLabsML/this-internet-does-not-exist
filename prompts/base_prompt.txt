@@ -53,9 +53,7 @@ Output: <!DOCTYPE html>
     </script>
 </head>
 <body onload="loadAllSections()">
-    <header>
-        <h1>Obelus</h1>
-    </header>
+    <header data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?query_section=wikipedia_header"></header>
 
     <main>
         <h2 id="introduction">Introduction</h2>
@@ -77,9 +75,7 @@ Output: <!DOCTYPE html>
         <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=references"></div>
     </main>
 
-    <footer>
-        <p>This article is a concise summary of the topic <a href="https://en.wikipedia.org/wiki/Obelus">Obelus</a> from Wikipedia.</p>
-    </footer>
+    <footer data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?general_layout?query_section=footer"></footer>
 </body>
 </html>
 
