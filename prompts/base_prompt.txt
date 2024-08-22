@@ -41,39 +41,27 @@ Output: <!DOCTYPE html>
 
     <main>
         <h2 id="introduction">Introduction</h2>
-        <div data-url="https://en.wikipedia.org/wiki/Obelus?get_only=introduction"></div>
+        <div data-dynamic-content-url="https://en.wikipedia.org/wiki/Obelus?get_only=introduction"></div>
 
         <h2 id="history">History</h2>
-        <div data-url="https://en.wikipedia.org/wiki/Obelus?get_only=history"></div>
+        <div data-dynamic-content-url="https://en.wikipedia.org/wiki/Obelus?get_only=history"></div>
 
         <h2 id="modern-use">Modern Use</h2>
-        <div data-url="https://en.wikipedia.org/wiki/Obelus?get_only=modern-use"></div>
+        <div data-dynamic-content-url="https://en.wikipedia.org/wiki/Obelus?get_only=modern-use"></div>
         
         <h2 id="similar-symbols">Similar Symbols</h2>
-        <div data-url="https://en.wikipedia.org/wiki/Obelus?get_only=similar-symbols"></div>
+        <div data-dynamic-content-url="https://en.wikipedia.org/wiki/Obelus?get_only=similar-symbols"></div>
 
         <h2 id="see-also">See Also</h2>
-        <div data-url="https://en.wikipedia.org/wiki/Obelus?get_only=see-also"></div>
+        <div data-dynamic-content-url="https://en.wikipedia.org/wiki/Obelus?get_only=see-also"></div>
 
         <h2 id="references">References</h2>
-        <div data-url="https://en.wikipedia.org/wiki/Obelus?get_only=references"></div>
+        <div data-dynamic-content-url="https://en.wikipedia.org/wiki/Obelus?get_only=references"></div>
     </main>
 
     <footer>
         <p>This article is a concise summary of the topic <a href="https://en.wikipedia.org/wiki/Obelus">Obelus</a> from Wikipedia.</p>
     </footer>
-
-    <script>
-        const loadAllSections = () => {
-            document.querySelectorAll('div[data-url]').forEach(div => {
-                div.innerHTML = '<span style="display:inline-block; opacity:0.5;">Loading content...</span>';
-                fetch(div.dataset.url)
-                    .then(res => res.text())
-                    .then(html => div.outerHTML = html)
-                    .catch(console.error);
-            });
-        };
-    </script>
 </body>
 </html>
 

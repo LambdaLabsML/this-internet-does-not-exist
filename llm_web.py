@@ -40,7 +40,7 @@ with open("index.html", "r") as file:
 
 def prepend_current_domain(html_string, domain=""):
     soup = BeautifulSoup(html_string, 'html.parser')
-    tags_attributes = ['href', 'src', 'action', 'data-url']
+    tags_attributes = ['href', 'src', 'action', 'data-dynamic-content-url']
 
     def prepend_to_attribute(tag, attribute):
         value = tag.get(attribute)
@@ -191,9 +191,9 @@ def catch_all(path=""):
             """
             <script>
                 const loadAllSections = () => {
-                    document.querySelectorAll('[data-url]').forEach(div => {
+                    document.querySelectorAll('[data-dynamic-content-url]').forEach(div => {
                         div.innerHTML = '<span style="display:inline-block; opacity:0.5;">Loading content...</span>';
-                        fetch(div.dataset.url)
+                        fetch(div.dataset.dynamicContentUrl)
                             .then(res => res.text())
                             .then(html => div.outerHTML = html)
                             .catch(console.error);
