@@ -6,7 +6,7 @@ Rules:
 2. Generate a dense and authentic website:
     - Structure: Use HTML to reflect clear hierarchy (headings, lists, tables).
     - Links: Include extensive internal/external hyperlinks, woven into text whenever appropriate. Use <a class="button" href="..."> to use CTA button/links.
-    - Styling: Use the following script to load styles dynamically:
+    - Styling: Use multiple smaller CSS files to optimize creation time. Use the following script to load styles dynamically:
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             var link = document.createElement("link");
@@ -32,7 +32,25 @@ Output: <!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Obelus - Wikipedia</title>
     <meta name="description" content="The obelus is a symbol consisting of a line with dots above and below, used historically for division or subtraction.">
-    <link rel="stylesheet" href="en.wikipedia.org/style.css?patterns=body,a,a:hover,a.button,header,h1,main,h2,table,th,td,url,footer,.references">
+    <script>
+        document.addEventListener("DOMContentLoaded", async function() {
+            const styles = [
+                { href: "URL/style.css?patterns=body&pattern_description=body_styles" },
+                { href: "URL/style.css?patterns=a,a:hover,a.button" },
+                { href: "URL/style.css?patterns=header,h1,main,h2" },
+                { href: "URL/style.css?patterns=table,th,td" },
+                { href: "URL/style.css?patterns=url,footer,.references" }
+            ];
+
+            for (const style of styles) {
+                const link = document.createElement("link");
+                link.rel = "stylesheet";
+                link.href = style.href;
+                document.head.appendChild(link);
+                await new Promise(resolve => link.onload = resolve);
+            }
+        });
+    </script>
 </head>
 <body onload="loadAllSections()">
     <header>
