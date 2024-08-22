@@ -101,6 +101,8 @@ def save_cached(url, content, content_type):
 # Flask Server #
 # ------------ #
 
+app = Flask(__name__)
+
 @app.route("/", methods = ['POST', 'GET'])
 @app.route("/<path:path>", methods = ['POST', 'GET'])
 def catch_all(path=""):
@@ -189,5 +191,4 @@ def catch_all(path=""):
 
 
 if __name__ == "__main__":
-    app = Flask(__name__)
     app.run()
