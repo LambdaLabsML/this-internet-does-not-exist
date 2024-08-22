@@ -4,7 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Title Screen</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <style>
+        .button-group .favicon {
+            background-color: #f0f0f0;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            border-radius: 10px;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-color: transparent;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .button-group .favicon img {
+            width: 16px;
+            height: 16px;
+            margin: 0 5px;
+        }
+        .button-group .text {
+            padding: 8px 35px;
+            font-size: 1.25em;
+            color: #555;
+            background-color: transparent;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            flex-grow: 1;
+            text-align: left;
+        }
+
         body {
             font-family: Helvetica, sans-serif;
             background-color: #f9f9f9;
@@ -20,21 +48,18 @@
             transition: all 0.3s ease;
         }
         .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
             margin-top: 30px;
         }
-        .button-group a {
-            display: inline-block;
-            margin: 10px;
-            padding: 15px 25px;
-            font-size: 1.25em;
-            color: #fff;
-            background-color: #333;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-        .button-group a:hover {
-            background-color: #a76cc7;
+        .button-group .button {
+            flex: 1 1 calc(25% - 20px); /* Adjust the percentage to control the number of buttons per row */
+            max-width: calc(25% - 20px);
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
         }
 
         .input-group {
@@ -53,31 +78,188 @@
             border: none;
             border-radius: 5px;
             background-color: #333;
-            color: #fff;
+            color: #ccc;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-        .input-group button:hover {
-            background-color: #a76cc7;
+
+        div.button {
+            border: 2px solid black;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
 
     <div class="title">This Internet does not exist.</div>
-
-    <div class="button-group">
-        <a href="/https://www.google.com">Google</a>
-        <a href="/https://www.wikipedia.org">Wikipedia</a>
-        <a href="/https://www.youtube.com">YouTube</a>
-        <a href="/https://www.facebook.com">Facebook</a>
-        <a href="/https://www.twitter.com">Twitter</a>
-    </div>
-
     <div class="input-group">
+        <label for="userInput">Visit any URL:</label>
         <input type="text" id="userInput" placeholder="Type a website name...">
         <button onclick="redirectToWebsite()">Go</button>
     </div>
+    <div class="button-group">
+        <div class="button" data-color="#4285F4">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.google.com" class="text">Google</a>
+        </div>
+        <div class="button" data-color="#000000">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.wikipedia.org" class="text">Wikipedia</a>
+        </div>
+        <div class="button" data-color="#FF0000">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.youtube.com" class="text">YouTube</a>
+        </div>
+        <div class="button" data-color="#3b5998">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.facebook.com" class="text">Facebook</a>
+        </div>
+        <div class="button" data-color="#1DA1F2">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.twitter.com" class="text">Twitter</a>
+        </div>
+        <div class="button" data-color="#E1306C">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.instagram.com" class="text">Instagram</a>
+        </div>
+        <div class="button" data-color="#0077B5">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.linkedin.com" class="text">LinkedIn</a>
+        </div>
+        <div class="button" data-color="#FF4500">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.reddit.com" class="text">Reddit</a>
+        </div>
+        <div class="button" data-color="#BD081C">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.pinterest.com" class="text">Pinterest</a>
+        </div>
+        <div class="button" data-color="#35465C">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.tumblr.com" class="text">Tumblr</a>
+        </div>
+        <div class="button" data-color="#B92B27">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.quora.com" class="text">Quora</a>
+        </div>
+        <div class="button" data-color="#333333">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.github.com" class="text">GitHub</a>
+        </div>
+        <div class="button" data-color="#F48024">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.stackoverflow.com" class="text">Stack Overflow</a>
+        </div>
+        <div class="button" data-color="#00ab6c">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.medium.com" class="text">Medium</a>
+        </div>
+        <div class="button" data-color="#6441A4">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.twitch.tv" class="text">Twitch</a>
+        </div>
+        <div class="button" data-color="#E50914">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.netflix.com" class="text">Netflix</a>
+        </div>
+        <div class="button" data-color="#1DB954">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.spotify.com" class="text">Spotify</a>
+        </div>
+        <div class="button" data-color="#4A154B">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.slack.com" class="text">Slack</a>
+        </div>
+        <div class="button" data-color="#0061FF">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.dropbox.com" class="text">Dropbox</a>
+        </div>
+        <div class="button" data-color="#FF5A5F">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.airbnb.com" class="text">Airbnb</a>
+        </div>
+        <div class="button" data-color="#0079BF">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.trello.com" class="text">Trello</a>
+        </div>
+        <div class="button" data-color="#273347">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.asana.com" class="text">Asana</a>
+        </div>
+        <div class="button" data-color="#1769FF">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.behance.net" class="text">Behance</a>
+        </div>
+        <div class="button" data-color="#EA4C89">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.dribbble.com" class="text">Dribbble</a>
+        </div>
+        <div class="button" data-color="#F24E1E">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.figma.com" class="text">Figma</a>
+        </div>
+        <div class="button" data-color="#00C4CC">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.canva.com" class="text">Canva</a>
+        </div>
+        <div class="button" data-color="#FF5500">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.soundcloud.com" class="text">SoundCloud</a>
+        </div>
+        <div class="button" data-color="#1AB7EA">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.vimeo.com" class="text">Vimeo</a>
+        </div>
+        <div class="button" data-color="#05CC47">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.deviantart.com" class="text">DeviantArt</a>
+        </div>
+        <div class="button" data-color="#663300">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.goodreads.com" class="text">Goodreads</a>
+        </div>
+        <div class="button" data-color="#DA552F">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.producthunt.com" class="text">Product Hunt</a>
+        </div>
+        <div class="button" data-color="#FF6600">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.hackernews.com" class="text">Hacker News</a>
+        </div>
+        <div class="button" data-color="#F0652F">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.ycombinator.com" class="text">Y Combinator</a>
+        </div>
+        <div class="button" data-color="#2BDE73">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.kickstarter.com" class="text">Kickstarter</a>
+        </div>
+        <div class="button" data-color="#EB1478">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.indiegogo.com" class="text">Indiegogo</a>
+        </div>
+        <div class="button" data-color="#F96854">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.patreon.com" class="text">Patreon</a>
+        </div>
+        <div class="button" data-color="#F16521">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.etsy.com" class="text">Etsy</a>
+        </div>
+        <div class="button" data-color="#96BF48">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.shopify.com" class="text">Shopify</a>
+        </div>
+        <div class="button" data-color="#FF6A00">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.alibaba.com" class="text">Alibaba</a>
+        </div>
+        <div class="button" data-color="#FF9900">
+            <div class="favicon"><img src=""></div>
+            <a href="https://www.amazon.com" class="text">Amazon</a>
+        </div>
+    </div>
+
 
     <script>
         function redirectToWebsite() {
@@ -86,6 +268,42 @@
                 window.location.href = '/' + input;
             }
         }
+        function applyButtonColors() {
+            const buttons = document.querySelectorAll('.button-group .button');
+            buttons.forEach(button => {
+                const color = button.getAttribute('data-color');
+                button.style.borderColor = color;
+                const text = button.querySelector('.text');
+                button.style.borderColor = color;
+                button.addEventListener('mouseover', () => {
+                    text.style.backgroundColor = color;
+                    text.style.color = 'white';
+                });
+                button.addEventListener('mouseout', () => {
+                    text.style.backgroundColor = 'transparent';
+                    text.style.color = '#555';
+                });
+            });
+        }
+
+        function fetchFavicons() {
+            const buttons = document.querySelectorAll('.button-group .button');
+            buttons.forEach(button => {
+                const link = button.querySelector('.text');
+                const img = button.querySelector('img');
+                if (!link || !img) return
+                const url = new URL(link.href);
+                const faviconUrl = `https://www.google.com/s2/favicons?domain=${url.hostname}`
+                console.log(faviconUrl)
+                img.src = faviconUrl;
+                link.href = '/' + link.href;
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            applyButtonColors();
+            fetchFavicons();
+        });
     </script>
 </body>
 </html>
