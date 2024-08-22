@@ -17,7 +17,7 @@ Rules:
     </script>
     - Typography: Match fonts, spacing, layout.
     - Interactivity: Implement JS for dropdowns, modals, search.
-    - Defer Content: Defer content using dynamically loaded content (using <button>Load Content</button>) to optimize speed. Answer only with that part when a url uses the `get_only` parameter. (See Example below)
+    - Defer Content: Defer content using dynamically loaded content (using <button>Load Content</button>) to optimize speed. Answer only with that part when a url uses the `query_section` parameter. (See Example below)
     - Multimedia: Correctly reference and load all media.
     - Interactive: Input fields are interactive. Use for instance <form submit="URL/search?..."> to lead the user to search results.
     - Colors: Properly chosen colors in elements such as text, headers, backgrounds are key in making website feel real. Choose colors according to real counterparts.
@@ -41,22 +41,22 @@ Output: <!DOCTYPE html>
 
     <main>
         <h2 id="introduction">Introduction</h2>
-        <div data-dynamic-content-url="https://en.wikipedia.org/wiki/Obelus?get_only=introduction"></div>
+        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=introduction"></div>
 
         <h2 id="history">History</h2>
-        <div data-dynamic-content-url="https://en.wikipedia.org/wiki/Obelus?get_only=history"></div>
+        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=history"></div>
 
         <h2 id="modern-use">Modern Use</h2>
-        <div data-dynamic-content-url="https://en.wikipedia.org/wiki/Obelus?get_only=modern-use"></div>
+        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=modern-use"></div>
         
         <h2 id="similar-symbols">Similar Symbols</h2>
-        <div data-dynamic-content-url="https://en.wikipedia.org/wiki/Obelus?get_only=similar-symbols"></div>
+        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=similar-symbols"></div>
 
         <h2 id="see-also">See Also</h2>
-        <div data-dynamic-content-url="https://en.wikipedia.org/wiki/Obelus?get_only=see-also"></div>
+        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=see-also"></div>
 
         <h2 id="references">References</h2>
-        <div data-dynamic-content-url="https://en.wikipedia.org/wiki/Obelus?get_only=references"></div>
+        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=references"></div>
     </main>
 
     <footer>
@@ -168,20 +168,20 @@ footer {
 }
 
 
-Input: en.wikipedia.org/Obulus?get_only=introduction
+Input: en.wikipedia.org/Obulus?query_section=introduction
 Output: <p>The <strong>obelus</strong> (<a href="https://en.wikipedia.org/wiki/Division_sign">÷</a>) is a symbol consisting of a line with a dot above and a dot below. It is primarily used in <a href="https://en.wikipedia.org/wiki/Mathematics">mathematics</a> to represent <a href="https://en.wikipedia.org/wiki/Division_(mathematics)">division</a> or, less commonly, <a href="https://en.wikipedia.org/wiki/Subtraction">subtraction</a>. The symbol has a rich history that spans from <a href="https://en.wikipedia.org/wiki/Ancient_Greece">Ancient Greece</a> to modern mathematical notation.</p>
 
-Input: en.wikipedia.org/Obulus?get_only=history
+Input: en.wikipedia.org/Obulus?query_section=history
 Output: <p>The obelus was first introduced by the Greek scholar <a href="https://en.wikipedia.org/wiki/Aristarchus_of_Samos">Aristarchus of Samos</a> in the 3rd century BC, primarily as a textual marker used in <a href="https://en.wikipedia.org/wiki/Ancient_manuscripts">ancient manuscripts</a> to indicate passages that were of dubious authenticity<sup>[1]</sup>. Over time, this symbol evolved in its use. During the Middle Ages, it was adopted by scholars and printers, most notably by the Swiss mathematician <a href="https://en.wikipedia.org/wiki/Johann_Rahn">Johann Rahn</a> in 1659, who repurposed the obelus as a division sign in his work "Teutsche Algebra"<sup>[2]</sup>.</p>
 <p>In early mathematical contexts, the obelus was used interchangeably with the colon (:) to represent division. However, its use became standardized as the division symbol in English-speaking countries, while other regions, particularly in Europe, favored the slash (/) or the horizontal line (—) for division<sup>[3]</sup>.</p>
 
 
-Input: en.wikipedia.org/Obulus?get_only=modern-use
+Input: en.wikipedia.org/Obulus?query_section=modern-use
 Output: <p>Today, the obelus is primarily used in <a href="https://en.wikipedia.org/wiki/Elementary_arithmetic">elementary arithmetic</a> to denote division. Despite its historical significance, its usage has declined in favor of the slash (/) and the horizontal line, especially in higher mathematics<sup>[4]</sup>. The obelus is also sometimes used to indicate subtraction, though this is rare and largely considered archaic.</p>
 
 <p>The obelus also appears in other contexts, such as in certain programming languages where it may be used to represent division operations. However, these instances are less common, as the majority of modern programming languages prefer the slash for division<sup>[5]</sup>.</p>
 
-Input: en.wikipedia.org/Obulus?get_only=similar-symbols
+Input: en.wikipedia.org/Obulus?query_section=similar-symbols
 Output: <p>The obelus is often confused with other symbols used in mathematics and textual notation. The table below highlights some of these similar symbols:</p>
 
 <table>
@@ -227,7 +227,7 @@ Output: <p>The obelus is often confused with other symbols used in mathematics a
 </table>
 
 
-Input: en.wikipedia.org/Obulus?get_only=see-also
+Input: en.wikipedia.org/Obulus?query_section=see-also
 Output: <ul>
     <li><a href="https://en.wikipedia.org/wiki/Division_sign">Division sign</a></li>
     <li><a href="https://en.wikipedia.org/wiki/Slash_(punctuation)">Slash (punctuation)</a></li>
@@ -236,7 +236,7 @@ Output: <ul>
     <li><a href="https://en.wikipedia.org/wiki/Minus_sign">Minus sign</a></li>
 </ul>
 
-Input: en.wikipedia.org/Obulus?get_only=references
+Input: en.wikipedia.org/Obulus?query_section=references
 Output: <ol class="references">
     <li><a href="https://en.wikipedia.org/wiki/Aristarchus_of_Samos">Aristarchus of Samos - Wikipedia</a></li>
     <li>Rahn, J. "Teutsche Algebra", Zurich, 1659.</li>
