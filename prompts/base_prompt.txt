@@ -32,7 +32,7 @@ Output: <!DOCTYPE html>
     <link rel="stylesheet" data-dynamic-content-url="/style.css?type=flex&patterns=url,footer,.see-also,.reference,footer a" />
 </head>
 <body onload="loadAllSections()">
-    <header data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?query_section=wikipedia_header_with_header_image&nav_selector=nav a"></header>
+    <header data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?query_section=wikipedia_header_with_header_image&nav_selector=nav a" data-outerHTML="true"></header>
 
     <main>
         <h2 id="introduction">Introduction</h2>
@@ -54,7 +54,7 @@ Output: <!DOCTYPE html>
         <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=references&text_type=text&reference_selector=.reference"></div>
     </main>
 
-    <footer data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?general_layout?query_section=footer"></footer>
+    <footer data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?general_layout?query_section=footer" data-outerHTML="true"></footer>
 </body>
 </html>
 

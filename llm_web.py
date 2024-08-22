@@ -203,10 +203,17 @@ def catch_all(path=""):
                                 })
                                 .catch(console.error);
                         } else {
+                            const isInnerHTML = element.dataset.innerHTML === 'true';
                             element.innerHTML = '<span style="display:inline-block; opacity:0.5;">Loading content...</span>';
                             fetch(element.dataset.dynamicContentUrl)
                                 .then(res => res.text())
-                                .then(html => element.outerHTML = html)
+                                .then(html => {
+                                    if (isInnerHTML) {
+                                        element.innerHTML = html;
+                                    } else {
+                                        element.outerHTML = html;
+                                    }
+                                })
                                 .catch(console.error);
                         }
                     });
