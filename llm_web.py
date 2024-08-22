@@ -203,16 +203,18 @@ def catch_all(path=""):
                                 })
                                 .catch(console.error);
                         } else {
-                            const isInnerHTML = element.dataset.innerHTML === 'true';
+                            const isInnerHTML = element.dataset.innerhtml === 'true';
                             element.innerHTML = '<span style="display:inline-block; opacity:0.5;">Loading content...</span>';
                             fetch(element.dataset.dynamicContentUrl)
                                 .then(res => res.text())
                                 .then(html => {
-                                    if (isInnerHTML) {
+                                    if (isInnerHTML || !element.outerHTML || !element.parentNode) {
                                         element.innerHTML = html;
                                     } else {
                                         element.outerHTML = html;
                                     }
+                                    element.removeAttribute('data-dynamic-content-url');
+
                                 })
                                 .catch(console.error);
                         }
