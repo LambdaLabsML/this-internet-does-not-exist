@@ -181,7 +181,7 @@ def catch_all(path=""):
 
 
     # unescape in case of javascript files
-    if content_type == "text/javascript":
+    if content_type in ["text/javascript", "text/css"]:
         response_data = html.unescape(response_data)
 
     # Add loadAllSections script before closing body tag
