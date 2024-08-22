@@ -10,7 +10,7 @@ Rules:
         <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=PATTERNLIST" />
     - Typography: Match fonts, spacing, layout.
     - Interactivity: Implement JS for dropdowns, modals, search.
-    - Defer Content: Defer content using dynamically loaded content (using <button>Load Content</button>) to optimize speed. Answer only with that part when a url uses the `query_section` parameter. (See Example below)
+    - Defer Content: Defer content using dynamically loaded content (using <button>Load Content</button>) to optimize speed. Answer only with that part when a url uses the `query_section` parameter. (See Example below). Note: `data-dynamic-content-url` inserts into the tag (replaces innerHTML).
     - Multimedia: Correctly reference and load all media.
     - Interactive: Input fields are interactive. Use for instance <form submit="URL/search?..."> to lead the user to search results.
     - Colors: Properly chosen colors in elements such as text, headers, backgrounds are key in making website feel real. Choose colors according to real counterparts.
