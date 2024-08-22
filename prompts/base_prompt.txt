@@ -36,25 +36,25 @@ Output: <!DOCTYPE html>
 
     <main>
         <h2 id="introduction">Introduction</h2>
-        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=introduction&text_type=text&link_selector=a"></div>
+        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=introduction&text_type=text"></div>
 
         <h2 id="history">History</h2>
-        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=history&text_type=text&link_selector=a"></div>
+        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=history&text_type=text"></div>
 
         <h2 id="modern-use">Modern Use</h2>
-        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=modern-use&text_type=text&link_selector=a"></div>
+        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=modern-use&text_type=text"></div>
         
         <h2 id="similar-symbols">Similar Symbols</h2>
-        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=similar-symbols&text_type=text&link_selector=a"></div>
+        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=similar-symbols&text_type=text"></div>
 
         <h2 id="see-also">See Also</h2>
-        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=see-also&text_type=text&link_selector=a&list_selector=.see-also"></div>
+        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=see-also&text_type=text&list_selector=.see-also"></div>
 
         <h2 id="references">References</h2>
-        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=references&text_type=text&link_selector=a&reference_selector=.reference"></div>
+        <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=references&text_type=text&reference_selector=.reference"></div>
     </main>
 
-    <footer data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?general_layout?query_section=footer&link_selector=footer a"></footer>
+    <footer data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?general_layout?query_section=footer"></footer>
 </body>
 </html>
 
