@@ -10,7 +10,7 @@ Rules:
         <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=PATTERNLIST" />
     - Typography: Match fonts, spacing, layout.
     - Interactivity: Implement JS for dropdowns, modals, search.
-    - Defer Content: Defer content using dynamically loaded content (using <button>Load Content</button>) to optimize speed. Answer only with that part when a url uses the `query_section` parameter. (See Example below). Note: `data-dynamic-content-url` inserts into the tag (replaces outerHTML). Add `data-innerhtml="true"` to indicate an insertion.
+    - Defer Content: Defer content using dynamically loaded content (using <button>Load Content</button>) to optimize speed. Answer only with that part when a url uses the `query_section` parameter. (See Example below). Note: `data-dynamic-content-url` inserts into the tag (replaces el.innerHTML). A call to `query_section` NEVER returns a full html page, but only the selected sub-tree.
     - Multimedia: Correctly reference and load all media.
     - Interactive: Input fields are interactive. Use for instance <form submit="URL/search?..."> to lead the user to search results.
     - Colors: Properly chosen colors in elements such as text, headers, backgrounds are key in making website feel real. Choose colors according to real counterparts.
@@ -32,11 +32,11 @@ Output: <!DOCTYPE html>
     <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=url,footer,.see-also,.reference,footer a" />
 </head>
 <body onload="loadAllSections()">
-    <header data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?query_section=wikipedia_header_with_header_image&nav_selector=nav a&logo_selector=.header_logo" data-innerhtml="true"></header>
+    <header data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?query_section=wikipedia_header_with_header_image&nav_selector=nav a&logo_selector=.header_logo"></header>
 
-    <main data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=main" innerhtml="true"/>
+    <main data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=main"/>
 
-    <footer data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?general_layout?query_section=footer" data-innerhtml="true"></footer>
+    <footer data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?general_layout?query_section=footer"></footer>
 </body>
 </html>
 
