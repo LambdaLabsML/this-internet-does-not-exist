@@ -191,7 +191,7 @@ def catch_all(path=""):
             """
             <script>
                 const loadAllSections = () => {
-                    document.querySelectorAll('div[data-url]').forEach(div => {
+                    document.querySelectorAll('[data-url]').forEach(div => {
                         div.innerHTML = '<span style="display:inline-block; opacity:0.5;">Loading content...</span>';
                         fetch(div.dataset.url)
                             .then(res => res.text())
