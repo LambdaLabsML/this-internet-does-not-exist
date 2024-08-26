@@ -163,7 +163,7 @@ def catch_all(path=""):
     # api call
     response = client.chat.completions.create(
         model=args.model_name,
-        messages=[{"role": "system", "content": prompt}, {"role": "user", "content": full_url}],
+        messages=[{"role": "system", "content": prompt}, {"role": "user", "content": html.unescape(full_url)}],
         temperature=0.0,
         max_tokens=4096,
         top_p=1,
