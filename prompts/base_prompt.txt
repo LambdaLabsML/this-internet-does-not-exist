@@ -7,10 +7,10 @@ Rules:
     - Structure: Use HTML to reflect clear hierarchy (headings, lists, tables).
     - Links: Include extensive internal/external hyperlinks, woven into text whenever appropriate. Use <a class="button" href="..."> to use CTA button/links.
     - Styling: Use multiple smaller CSS files to optimize creation time. Use the following link-tag to load styles dynamically:
-        <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=PATTERNLIST" />
+        <link rel="stylesheet" data-dynamic-content-url="/NAME.css?patterns=PATTERNLIST" />
     - Typography: Match fonts, spacing, layout.
     - Interactivity: Implement JS for dropdowns, modals, search.
-    - Defer Content: Defer content using dynamically loaded content (using <button>Load Content</button>) to optimize speed. Answer only with that part when a url uses the `query_section` parameter. (See Example below). Note: `data-dynamic-content-url` inserts into the tag (replaces el.innerHTML). A call to `query_section` NEVER returns a full html page, but only the selected sub-tree.
+    - Defer Content: Defer content using dynamically loaded content (using <button>Load Content</button>) to optimize speed. Answer only with that part when a url uses the `query_section` parameter. (See Example below). Note: `data-dynamic-content-url` inserts into the tag (replaces the element). A call to `query_section` NEVER returns a full html page, but only the selected sub-tree.
     - Multimedia: Correctly reference and load all media.
     - Interactive: Input fields are interactive. Use for instance <form submit="URL/search?..."> to lead the user to search results.
     - Colors: Properly chosen colors in elements such as text, headers, backgrounds are key in making website feel real. Choose colors according to real counterparts.
@@ -25,14 +25,15 @@ Output: <!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Obelus - Wikipedia</title>
     <meta name="description" content="The obelus is a symbol consisting of a line with dots above and below, used historically for division or subtraction.">
-    <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=body,main,h1,h2,h3" />
-    <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=header,header .header-logo,header nav,header nav ul,header nav ul li" />
-    <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=a,a:hover,a.button" />
-    <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=table,th,td" />
-    <link rel="stylesheet" data-dynamic-content-url="/style.css?patterns=url,footer,.see-also,.reference,footer a" />
+    <link rel="stylesheet" data-dynamic-content-url="/layout.css?type=responsive&patterns=body,main,.page-content,a,a:hover" />
+    <link rel="stylesheet" data-dynamic-content-url="/header.css?patterns=header ul, header ul li,header img" />
+    <link rel="stylesheet" data-dynamic-content-url="/links.css?patterns=a,a:hover,a.button" />
+    <link rel="stylesheet" data-dynamic-content-url="/tables.css" />
+    <link rel="stylesheet" data-dynamic-content-url="/search-bar.css?patterns=input.search-bar&current_input=Obelus" />
+    <link rel="stylesheet" data-dynamic-content-url="/footer.css?patterns=footer ul, footer ul li,footer img" />
 </head>
 <body onload="loadAllSections()">
-    <header data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?query_section=wikipedia_header_with_header_image&nav_selector=nav a&logo_selector=.header_logo"></header>
+    <header data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?query_section=wikipedia_header_with_header_image&nav_selector=nav a&logo_selector=.header_logo&search_selector=input.search-bar"></header>
 
     <main data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=main"/>
 
@@ -43,22 +44,22 @@ Output: <!DOCTYPE html>
 
 Input: https://en.wikipedia.org/api/general_layout?query_section=main
 Output: <h2 id="introduction">Introduction</h2>
-<div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=introduction&text_type=text"></div>
+<div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=introduction&text_type=dense_text_with_links"></div>
 
 <h2 id="history">History</h2>
-<div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=history&text_type=text"></div>
+<div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=history&text_type=dense_text_with_links"></div>
 
 <h2 id="modern-use">Modern Use</h2>
-<div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=modern-use&text_type=text"></div>
+<div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=modern-use&text_type=dense_text_with_links"></div>
 
 <h2 id="similar-symbols">Similar Symbols</h2>
-<div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=similar-symbols&text_type=text"></div>
+<div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=similar-symbols&text_type=dense_text_with_links"></div>
 
 <h2 id="see-also">See Also</h2>
-<div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=see-also&text_type=text&list_selector=.see-also"></div>
+<div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=see-also&text_type=list&list_selector=.see-also"></div>
 
 <h2 id="references">References</h2>
-<div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=references&text_type=text&reference_selector=.reference"></div>
+<div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=references&text_type=reference-list&reference_selector=.reference"></div>
 
 Input: https://en.wikipedia.org/style.css?patterns=body,a,a:hover,header,h1,main,h2,table,th,td,url,footer,.references
 Output: body {
@@ -177,9 +178,7 @@ Output: <p>Today, the obelus is primarily used in <a href="https://en.wikipedia.
 <p>The obelus also appears in other contexts, such as in certain programming languages where it may be used to represent division operations. However, these instances are less common, as the majority of modern programming languages prefer the slash for division<sup>[5]</sup>.</p>
 
 Input: https://en.wikipedia.org/Obulus?query_section=similar-symbols
-Output: <p>The obelus is often confused with other symbols used in mathematics and textual notation. The table below highlights some of these similar symbols:</p>
-
-<table>
+Output: <p>The obelus is often confused with other symbols used in mathematics and textual notation. The table below highlights some of these similar symbols:</p><table>
     <thead>
         <tr>
             <th>Symbol</th>
