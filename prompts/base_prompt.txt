@@ -7,7 +7,7 @@ Rules:
     - Structure: Use HTML to reflect clear hierarchy (headings, lists, tables).
     - Links: Include extensive internal/external hyperlinks, woven into text whenever appropriate. Use <a class="button" href="..."> to use CTA button/links.
     - Styling: Use multiple smaller CSS files to optimize creation time. Use the following link-tag to load styles dynamically:
-        <link rel="stylesheet" data-dynamic-content-url="/NAME.css?patterns=PATTERNLIST" />
+        <link rel="stylesheet" data-dynamic-content-url="/NAME.css?structure=HTML_SHORTHAND" />
     - Typography: Match fonts, spacing, layout.
     - Interactivity: Implement JS for dropdowns, modals, search.
     - Defer Content: Defer content using dynamically loaded content (using <button>Load Content</button>) to optimize speed. Answer only with that part when a url uses the `query_section` parameter. (See Example below). Note: `data-dynamic-content-url` inserts into the tag (replaces the element). A call to `query_section` NEVER returns a full html page, but only the selected sub-tree.
@@ -25,24 +25,23 @@ Output: <!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Obelus - Wikipedia</title>
     <meta name="description" content="The obelus is a symbol consisting of a line with dots above and below, used historically for division or subtraction.">
-    <link rel="stylesheet" data-dynamic-content-url="/layout.css?type=responsive&patterns=body,main,.page-content,a,a:hover" />
-    <link rel="stylesheet" data-dynamic-content-url="/header.css?patterns=header ul, header ul li,header img" />
-    <link rel="stylesheet" data-dynamic-content-url="/links.css?patterns=a,a:hover,a.button" />
-    <link rel="stylesheet" data-dynamic-content-url="/tables.css" />
-    <link rel="stylesheet" data-dynamic-content-url="/search-bar.css?patterns=input.search-bar&current_input=Obelus" />
-    <link rel="stylesheet" data-dynamic-content-url="/footer.css?patterns=footer ul, footer ul li,footer img" />
+    <link rel="stylesheet" data-dynamic-content-url="/layout.css?type=responsive&structure=body+main+(h1+h2+div)*" />
+    <link rel="stylesheet" data-dynamic-content-url="/header.css?structure=header>img+nav>ul>li*4+a" />
+    <link rel="stylesheet" data-dynamic-content-url="/links.css?structure=a+li*3" />
+    <link rel="stylesheet" data-dynamic-content-url="/tables.css?structure=table>(thead+tbody)>tr>(th+td)*" />
+    <link rel="stylesheet" data-dynamic-content-url="/footer.css?structure=footer>ul>li*4+a+p" />
 </head>
 <body onload="loadAllSections()">
-    <header data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?query_section=wikipedia_header_with_header_image&nav_selector=nav a&logo_selector=.header_logo&search_selector=input.search-bar"></header>
+    <header data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?query_section=header&structure=header>img+nav>ul>li*4+a"></header>
 
-    <main data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=main"/>
+    <main data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=main&structure=(h2+div)*"/>
 
-    <footer data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?general_layout?query_section=footer"></footer>
+    <footer data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?query_section=footer&structure=footer>ul>li*4+a+p"></footer>
 </body>
 </html>
 
 
-Input: https://en.wikipedia.org/api/general_layout?query_section=main
+Input: https://en.wikipedia.org/api/general_layout?query_section=main&structure=(h2+div)*
 Output: <h2 id="introduction">Introduction</h2>
 <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=introduction&text_type=dense_text_with_links"></div>
 
@@ -61,7 +60,8 @@ Output: <h2 id="introduction">Introduction</h2>
 <h2 id="references">References</h2>
 <div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=references&text_type=reference-list&reference_selector=.reference"></div>
 
-Input: https://en.wikipedia.org/style.css?patterns=url,.references
+
+Input: https://en.wikipedia.org/style.css?structure=url,.references,body+main+header+footer
 Output: url {
     word-break: break-all;
 }
@@ -69,6 +69,27 @@ Output: url {
 .references {
     list-style-type: decimal;
     padding-left: 2rem;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    padding: 1rem;
+}
+
+header {
+    background-color: #f8f9fa;
+    padding: 1rem 2rem;
+}
+
+footer {
+    background-color: #f1f1f1;
+    padding: 1rem 2rem;
+    text-align: center;
 }
 
 
