@@ -46,7 +46,10 @@ def prepend_current_domain(html_string, domain=""):
         value = tag.get(attribute)
         if value and not value.startswith("#"):
             if value.startswith("/"):
-                tag[attribute] = f"/{domain}{value}" if domain != "/" else f"{value}"
+                if domain.endswith("/"):
+                    tag[attribute] = f"/{domain[:-1]}{value}" if domain != "/" else f"{value}"
+                else:
+                    tag[attribute] = f"/{domain}{value}" if domain != "/" else f"{value}"
             else:
                 tag[attribute] = f"/{value}"
 
