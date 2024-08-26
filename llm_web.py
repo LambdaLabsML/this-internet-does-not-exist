@@ -212,9 +212,9 @@ def catch_all(path=""):
                             fetch(element.dataset.dynamicContentUrl)
                                 .then(res => res.text())
                                 .then(html => {
-                                    element.removeAttribute('data-dynamic-content-url');
-                                    element.innerHTML = html;
-
+                                    const tempContainer = document.createElement('div');
+                                    tempContainer.innerHTML = html;
+                                    element.replaceWith(...tempContainer.childNodes);
                                 })
                                 .catch(console.error);
                         }
