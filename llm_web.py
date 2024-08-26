@@ -195,6 +195,8 @@ def catch_all(path=""):
             <script>
                 const loadAllSections = () => {
                     document.querySelectorAll('[data-dynamic-content-url]').forEach(element => {
+                        if (element.hasAttribute('data-processed')) return;
+                        element.setAttribute('data-processed', 'true');
                         if (element.tagName.toLowerCase() === 'link' && element.rel === 'stylesheet') {
                             fetch(element.dataset.dynamicContentUrl)
                                 .then(res => res.text())
