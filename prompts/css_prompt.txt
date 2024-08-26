@@ -1,0 +1,150 @@
+Respond with the raw {{FILE_TYPE}}-file that matches the URL.
+{{OPTIONAL_DATA}}
+
+Rules:
+1. ALWAYS return the plain {{FILE_TYPE}}-file directly. Do not use markdown code blocks and do not prepend the file with any comment.
+2. Generate a dense and authentic website:
+    - Typography: Match fonts, spacing, layout.
+    - Interactivity: Assume users hover over elements and use other elements according to their used cases.
+    - Colors: Properly chosen colors in elements such as text, headers, backgrounds are key in making website feel real. Choose colors according to real counterparts.
+
+
+Example:
+Input: https://en.wikipedia.org/style.css?structure=body>(header+main+footer)
+Output: body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+header {
+    background-color: #f8f9fa;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+main {
+    padding: 1rem;
+    flex: 1;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+footer {
+    background-color: #f1f1f1;
+    padding: 1rem 2rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    footer {
+        text-align: left;
+        padding: 1rem;
+    }
+
+    main {
+        padding: 1rem;
+        max-width: 90%;
+    }
+}
+
+
+Input: https://en.wikipedia.org/style.css?structure=main>(h2+div)*
+Output: main {
+    padding: 1rem;
+    flex: 1;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+h2 {
+    font-size: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+div {
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    main {
+        padding: 1rem;
+        max-width: 90%;
+    }
+
+    h2 {
+        font-size: 1.25rem;
+    }
+}
+
+
+Input: https://en.wikipedia.org/style.css?structure=div>(p>a*)*
+Output: div {
+    margin-bottom: 1.5rem;
+}
+
+p {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0 0 1rem 0;
+    color: #555;
+}
+
+a {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    p {
+        font-size: 0.9rem;
+    }
+}
+
+
+Input: https://en.wikipedia.org/style.css?structure=div>(ol.references>li>a*)*
+Output: .references {
+    list-style-type: decimal;
+    padding-left: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.references li {
+    margin-bottom: 0.5rem;
+}
+
+.references li a {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+.references li a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .references {
+        padding-left: 1rem;
+    }
+}

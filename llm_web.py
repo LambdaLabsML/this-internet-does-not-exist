@@ -22,12 +22,15 @@ def parse_arguments():
     parser.add_argument("--no-persistent_cache", action='store_true', help="Disable persistent cache")
     parser.add_argument("--base_url", type=str, default="http://localhost:5000/", help="Base URL for the server")
     parser.add_argument("--base_prompt", type=str, default="prompts/base_prompt.txt", help="Path to the base prompt file")
+    parser.add_argument("--css_prompt", type=str, default="prompts/css_prompt.txt", help="Path to the base prompt file")
     return parser.parse_args()
 
 args = parse_arguments()
 client = OpenAI(api_key=args.api_key, base_url=args.api_url)
 with open(args.base_prompt, "r") as file:
     BASE_PROMPT = file.read()
+with open(args.css_prompt, "r") as file:
+    CSS_PROMPT = file.read()
 with open("index.html", "r") as file:
     INDEX_HTML = file.read()
 
@@ -156,7 +159,8 @@ def catch_all(path=""):
     #   - OPTIONAL_DATA -> POST request data (for forms, etc.)
     #   - URL_PATH -> virtual url
     #   - FILE_TYPE -> content_type
-    prompt = BASE_PROMPT if not request.form else BASE_PROMPT.replace("{{OPTIONAL_DATA}}", f"\nForm data: {json.dumps(request.form)}")
+    prompt_used = CSS_PROMPT if "css" in content_type else BASE_PROMPT
+    prompt = prompt_used if not request.form else prompt_used.replace("{{OPTIONAL_DATA}}", f"\nForm data: {json.dumps(request.form)}")
     prompt = prompt.replace("{{URL_PATH}}", full_url)
     prompt = prompt.replace("{{FILE_TYPE}}", content_type)
 
@@ -197,8 +201,12 @@ def catch_all(path=""):
                     document.querySelectorAll('[data-dynamic-content-url]').forEach(element => {
                         if (element.hasAttribute('data-processed')) return;
                         element.setAttribute('data-processed', 'true');
-                        if (element.tagName.toLowerCase() === 'link' && element.rel === 'stylesheet') {
-                            fetch(element.dataset.dynamicContentUrl)
+
+                        const dynamicUrl = element.dataset.dynamicContentUrl;
+                        const tagName = element.tagName.toLowerCase();
+
+                        if (tagName === 'link' && element.rel === 'stylesheet') {
+                            fetch(dynamicUrl)
                                 .then(res => res.text())
                                 .then(css => {
                                     const style = document.createElement('style');
@@ -208,8 +216,20 @@ def catch_all(path=""):
                                 })
                                 .catch(console.error);
                         } else {
+                            const structure = dynamicUrl.match(/structure=([^&]+)/)?.[1];
+
+                            if (structure) {
+                                const link = document.createElement('link');
+                                link.rel = 'stylesheet';
+                                const urlParts = dynamicUrl.split("/")
+                                const lastEmptyIndex = urlParts.lastIndexOf("");
+                                const url = urlParts[lastEmptyIndex+1];
+                                link.href = `/${url}/style.css?structure=${structure}`;
+                                document.head.appendChild(link);
+                            }
+
                             element.innerHTML = '<span style="display:inline-block; opacity:0.5;">Loading content...</span>';
-                            fetch(element.dataset.dynamicContentUrl)
+                            fetch(dynamicUrl)
                                 .then(res => res.text())
                                 .then(html => {
                                     const tempContainer = document.createElement('div');
@@ -220,12 +240,22 @@ def catch_all(path=""):
                         }
                     });
                 };
+
                 const observer = new MutationObserver((mutations) => {
                     mutations.forEach((mutation) => {
                         if (mutation.type === 'childList') {
                             mutation.addedNodes.forEach((node) => {
-                                if (node.nodeType === 1 && node.hasAttribute('data-dynamic-content-url')) {
-                                    loadAllSections();
+                                if (node.nodeType === 1) { // Check if the node is an element
+                                    // Check the node itself
+                                    if (node.hasAttribute('data-dynamic-content-url')) {
+                                        loadAllSections();
+                                    }
+                                    // Check within the subtree of the node
+                                    node.querySelectorAll('[data-dynamic-content-url]').forEach(subNode => {
+                                        if (!subNode.hasAttribute('data-processed')) {
+                                            loadAllSections();
+                                        }
+                                    });
                                 }
                             });
                         }
@@ -241,7 +271,7 @@ def catch_all(path=""):
                     loadAllSections();
                 });
             </script>
-            </body>
+        </body>
             """
         )
 
