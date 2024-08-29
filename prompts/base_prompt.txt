@@ -12,6 +12,7 @@ Rules:
     - Interactivity: Implement JS for dropdowns, modals, search.
     - Multimedia: Correctly reference and load all media.
     - Interactive: Specify the location of expected input fields using the `structure` parameter. Input fields are interactive. Use for instance <form submit="URL/search?..."> to lead the user to search results.
+3. Do not render <main> content directly. Instead, ALWAYS use data-dynamic-content-url on main tags.
 
 
 Example:
