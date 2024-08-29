@@ -215,6 +215,23 @@ def catch_all(path=""):
                                     element.remove();
                                 })
                                 .catch(console.error);
+                        } else if (tagName === 'script') {
+                            fetch(dynamicUrl)
+                                .then(res => res.text())
+                                .then(js => {
+                                    const script = document.createElement('script');
+                                    script.textContent = js;
+                                    document.head.appendChild(script);
+
+                                    // Ensure the script is executed immediately after appending it to the head
+                                    const clonedScript = document.createElement('script');
+                                    clonedScript.type = 'text/javascript';
+                                    clonedScript.text = script.text;
+                                    document.body.appendChild(clonedScript);
+
+                                    element.remove();
+                                })
+                                .catch(console.error);
                         } else {
                             const structure = dynamicUrl.match(/structure=([^&]+)/)?.[1];
 
