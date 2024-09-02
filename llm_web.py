@@ -165,9 +165,13 @@ def catch_all(path=""):
     prompt = prompt.replace("{{FILE_TYPE}}", content_type)
 
     # api call
+    user_request = json.dumps({"url": html.unescape(full_url), **request.args.to_dict()})
     response = client.chat.completions.create(
         model=args.model_name,
-        messages=[{"role": "system", "content": prompt}, {"role": "user", "content": html.unescape(full_url)}],
+        messages=[
+            {"role": "system", "content": prompt},
+            {"role": "user", "content": user_request}
+        ],
         temperature=0.0,
         max_tokens=4096,
         top_p=1,
