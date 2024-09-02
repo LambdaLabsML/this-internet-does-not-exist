@@ -251,7 +251,7 @@ def catch_all(path=""):
                                 })
                                 .catch(console.error);
                         } else {
-                            const structure = element.getAttribute('data-structure') || false;
+                            const structure = element.getAttribute('structure') || false;
 
                             if (structure) {
                                 const link = document.createElement('link');
