@@ -205,8 +205,23 @@ def catch_all(path=""):
                         const dynamicUrl = element.dataset.dynamicContentUrl;
                         const tagName = element.tagName.toLowerCase();
 
+                        const postData = {};
+                        Array.from(element.attributes).forEach(attr => {
+                            if (attr.name !== 'data-dynamic-content-url' && attr.name !== 'data-processed') {
+                                postData[attr.name] = attr.value;
+                            }
+                        });
+
+                        const fetchOptions = {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(postData)
+                        };
+
                         if (tagName === 'link' && element.rel === 'stylesheet') {
-                            fetch(dynamicUrl)
+                            fetch(dynamicUrl, fetchOptions)
                                 .then(res => res.text())
                                 .then(css => {
                                     const style = document.createElement('style');
@@ -216,7 +231,7 @@ def catch_all(path=""):
                                 })
                                 .catch(console.error);
                         } else if (tagName === 'script') {
-                            fetch(dynamicUrl)
+                            fetch(dynamicUrl, fetchOptions)
                                 .then(res => res.text())
                                 .then(js => {
                                     const script = document.createElement('script');
@@ -246,7 +261,7 @@ def catch_all(path=""):
                             }
 
                             element.innerHTML = '<span style="display:inline-block; opacity:0.5;">Loading content...</span>';
-                            fetch(dynamicUrl)
+                            fetch(dynamicUrl, fetchOptions)
                                 .then(res => res.text())
                                 .then(html => {
                                     const tempContainer = document.createElement('div');
