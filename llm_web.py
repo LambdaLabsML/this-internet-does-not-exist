@@ -251,7 +251,7 @@ def catch_all(path=""):
                                 })
                                 .catch(console.error);
                         } else {
-                            const structure = dynamicUrl.match(/structure=([^&]+)/)?.[1];
+                            const structure = element.getAttribute('data-structure') || false;
 
                             if (structure) {
                                 const link = document.createElement('link');
