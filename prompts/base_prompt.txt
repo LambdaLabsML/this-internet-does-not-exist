@@ -4,7 +4,7 @@ Respond with the raw {{FILE_TYPE}}-file that matches the URL.
 Rules:
 1. ALWAYS return the plain {{FILE_TYPE}}-file directly. Do not use markdown code blocks and do not prepend the file with any comment.
 2. Generate a dense and authentic website:
-    - Structure: Use HTML to reflect clear hierarchy (headings, lists, tables).
+    - Structure: Use HTML to reflect clear hierarchy (headings, lists, tables) that matches the URL. Structures differ for the entry-page (www.google.com), search results (www.google.com?q=waffles) and blogs (blog.google.com/products/android).
     - Links: Include extensive internal/external hyperlinks, woven into text whenever appropriate. Use <a class="button" href="..."> to use CTA button/links.
     - Styling: Use multiple smaller CSS files to optimize creation time. Use the following link-tag to load styles dynamically:
         <link rel="stylesheet" data-dynamic-content-url="/NAME.css?structure=HTML_SHORTHAND" />
@@ -15,7 +15,7 @@ Rules:
 3. Do not render <main> content directly. Instead, ALWAYS use data-dynamic-content-url on main tags.
 
 
-Example:
+Example: Demonstrates clear structure and dynamic content integration.
 Input: https://en.wikipedia.org/wiki/Obelus
 Output: <!DOCTYPE html>
 <html lang="en">
@@ -27,15 +27,16 @@ Output: <!DOCTYPE html>
     <link rel="stylesheet" data-dynamic-content-url="/style.css?type=responsive&structure=body>(header+main+footer)" />
 </head>
 <body onload="loadAllSections()">
-    <header data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?query_section=header&structure=header>input.searchbar+img+nav>ul>li*4+a"></header>
+    <header data-dynamic-content-url="https://en.wikipedia.org/Obelus?query_section=header&structure=header>input.searchbar+img+nav>ul>li*4+a"></header>
 
-    <main data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=main&structure=main>(h2+div[data-dynamic-content-url])*"/>
+    <main data-dynamic-content-url="https://en.wikipedia.org/Obelus?query_section=main&structure=main>(h2+div[data-dynamic-content-url])*"/>
 
-    <footer data-dynamic-content-url="https://en.wikipedia.org/api/general_layout?query_section=footer&structure=footer>ul>li*4+a+p"></footer>
+    <footer data-dynamic-content-url="https://en.wikipedia.org/Obelus?query_section=footer&structure=footer>ul>li*4+a+p"></footer>
 </body>
 </html>
 
 
+Example: Demonstrates integration of extensive navigation and dynamic sidebars.
 Input: https://www.cnn.com/
 Output: <!DOCTYPE html>
 <html lang="en">
@@ -47,42 +48,45 @@ Output: <!DOCTYPE html>
     <link rel="stylesheet" data-dynamic-content-url="/style.css?type=responsive&structure=body>(header+main+footer+aside)" />
 </head>
 <body onload="loadAllSections()">
-    <header data-dynamic-content-url="https://www.cnn.com/api/general_layout?query_section=header&structure=header>input.searchbar+img+nav>ul>li*6+a"></header>
+    <header data-dynamic-content-url="https://www.cnn.com/Obelus?query_section=header&structure=header>input.searchbar+img+nav>ul>li*6+a"></header>
 
-    <aside data-dynamic-content-url="https://www.cnn.com/api/general_layout?query_section=sidebar&structure=aside>ul>li*5+a"></aside>
+    <aside data-dynamic-content-url="https://www.cnn.com/Obelus?query_section=sidebar&structure=aside>ul>li*5+a"></aside>
 
-    <main data-dynamic-content-url="https://www.cnn.com/api/news?query_section=top_stories&structure=main>(h1+article[data-dynamic-content-url])*"/>
+    <main data-dynamic-content-url="https://www.cnn.com/news?query_section=top_stories&structure=main>(h1+article[data-dynamic-content-url])*"/>
 
-    <footer data-dynamic-content-url="https://www.cnn.com/api/general_layout?query_section=footer&structure=footer>ul>li*4+a+p"></footer>
+    <footer data-dynamic-content-url="https://www.cnn.com/Obelus?query_section=footer&structure=footer>ul>li*4+a+p"></footer>
 </body>
 </html>
 
 
-Input: https://en.wikipedia.org/api/general_layout?query_section=main&structure=(h2+div[data-dynamic-content-url])*
+Example: Demonstrates how the main content is dynamically generated based on a query section.
+Input: https://en.wikipedia.org/Obelus?query_section=main&structure=(h2+div[data-dynamic-content-url])*
 Output: <h2 id="introduction">Introduction</h2>
-<div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=introduction&structure=(p>a*)*"></div>
+<div data-dynamic-content-url="https://en.wikipedia.org/Obelus?query_section=introduction&structure=(p>a*)*"></div>
 
 <h2 id="history">History</h2>
-<div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=history&structure=(p>a*)*"></div>
+<div data-dynamic-content-url="https://en.wikipedia.org/Obelus?query_section=history&structure=(p>a*)*"></div>
 
 <h2 id="modern-use">Modern Use</h2>
-<div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=modern-use&structure=(p>a*)*"></div>
+<div data-dynamic-content-url="https://en.wikipedia.org/Obelus?query_section=modern-use&structure=(p>a*)*"></div>
 
 <h2 id="similar-symbols">Similar Symbols</h2>
-<div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=similar-symbols&structure=(p>a*)*"></div>
+<div data-dynamic-content-url="https://en.wikipedia.org/Obelus?query_section=similar-symbols&structure=(p>a*)*"></div>
 
 <h2 id="see-also">See Also</h2>
-<div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=see-also&structure=(p>a*)*"></div>
+<div data-dynamic-content-url="https://en.wikipedia.org/Obelus?query_section=see-also&structure=(p>a*)*"></div>
 
 <h2 id="references">References</h2>
-<div data-dynamic-content-url="https://en.wikipedia.org/api/Obelus?query_section=references&structure=(p>a*)*"></div>
+<div data-dynamic-content-url="https://en.wikipedia.org/Obelus?query_section=references&structure=(p>a*)*"></div>
 
 
+Example: Shows how dynamic sections can provide dense, long content.
 Input: en.wikipedia.org/Obulus?query_section=history&structure=p
 Output: <p>The obelus was first introduced by the Greek scholar <a href="https://en.wikipedia.org/wiki/Aristarchus_of_Samos">Aristarchus of Samos</a> in the 3rd century BC, primarily as a textual marker used in <a href="https://en.wikipedia.org/wiki/Ancient_manuscripts">ancient manuscripts</a> to indicate passages that were of dubious authenticity<sup>[1]</sup>. Over time, this symbol evolved in its use. During the Middle Ages, it was adopted by scholars and printers, most notably by the Swiss mathematician <a href="https://en.wikipedia.org/wiki/Johann_Rahn">Johann Rahn</a> in 1659, who repurposed the obelus as a division sign in his work "Teutsche Algebra"<sup>[2]</sup>.</p>
 <p>In early mathematical contexts, the obelus was used interchangeably with the colon (:) to represent division. However, its use became standardized as the division symbol in English-speaking countries, while other regions, particularly in Europe, favored the slash (/) or the horizontal line (—) for division<sup>[3]</sup>.</p>
 
 
+Example: Demonstrates dynamic content within a table structure for comparisons.
 Input: https://en.wikipedia.org/Obulus?query_section=similar-symbols
 Output: <p>The obelus is often confused with other symbols used in mathematics and textual notation. The table below highlights some of these similar symbols:</p><table>
     <thead>
@@ -127,11 +131,25 @@ Output: <p>The obelus is often confused with other symbols used in mathematics a
 </table>
 
 
-Input: https://en.wikipedia.org/Obulus?query_section=references
-Output: <ol class="references">
-    <li><a href="https://en.wikipedia.org/wiki/Aristarchus_of_Samos">Aristarchus of Samos - Wikipedia</a></li>
-    <li>Rahn, J. "Teutsche Algebra", Zurich, 1659.</li>
-    <li><a href="https://en.wikipedia.org/wiki/History_of_mathematical_symbols">History of Mathematical Symbols - Wikipedia</a></li>
-    <li>Smith, A. "Mathematical Notation in the Modern World", Mathematics Journal, 2009.</li>
-    <li><a href="https://en.wikipedia.org/wiki/Programming_languages">Programming Languages - Wikipedia</a></li>
-</ol>
+Input: https://simple-weather.io/New_York_City
+Output: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Chart Example</title>
+    <link rel="stylesheet" data-dynamic-content-url="/styles.css?structure=body>(header+main+footer)" />
+</head>
+<body>
+    <header><h1>Interactive Chart Example</h1></header>
+
+    <main>
+        <button id="loadChartButton">Load Chart</button>
+        <div id="chart-container"></div>
+    </main>
+
+    <footer><p>&copy; 2024 Interactive Chart Example</p></footer>
+
+    <script data-dynamic-content-url="/loadWeather.js?description=A method named loadChartButton loads weather data for New_York_City and shows the data in a chart created automatically in the div with the id #chart-container"></script>
+</body>
+</html>
