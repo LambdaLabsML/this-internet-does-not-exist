@@ -160,12 +160,14 @@ def catch_all(path=""):
     #   - URL_PATH -> virtual url
     #   - FILE_TYPE -> content_type
     prompt_used = CSS_PROMPT if "css" in content_type else BASE_PROMPT
-    prompt = prompt_used if not request.form else prompt_used.replace("{{OPTIONAL_DATA}}", f"\nForm data: {json.dumps(request.form)}")
+    prompt = prompt_used
     prompt = prompt.replace("{{URL_PATH}}", full_url)
     prompt = prompt.replace("{{FILE_TYPE}}", content_type)
 
     # api call
-    user_request = json.dumps({"url": html.unescape(full_url), **request.args.to_dict()})
+    additional_data = request.form.to_dict() or {}
+    user_request = json.dumps({"url": html.unescape(full_url), **additional_data})
+    print("User requested:", user_request)
     response = client.chat.completions.create(
         model=args.model_name,
         messages=[
@@ -209,19 +211,16 @@ def catch_all(path=""):
                         const dynamicUrl = element.dataset.dynamicContentUrl;
                         const tagName = element.tagName.toLowerCase();
 
-                        const postData = {};
+                        const postData = new FormData();
                         Array.from(element.attributes).forEach(attr => {
                             if (attr.name !== 'data-dynamic-content-url' && attr.name !== 'data-processed') {
-                                postData[attr.name] = attr.value;
+                                postData.append(attr.name, attr.value)
                             }
                         });
 
                         const fetchOptions = {
                             method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(postData)
+                            body: postData
                         };
 
                         if (tagName === 'link' && element.rel === 'stylesheet') {
