@@ -63,7 +63,7 @@ footer {
 }
 
 
-Input: {"url": "https://en.wikipedia.org/style.css", "structure": "main>(h2+div)*"}
+Input: {"url": "https://en.wikipedia.org/main.css", "structure": "main>(h2+div)*"}
 Output: main {
     padding: 1rem;
     flex: 1;
@@ -94,7 +94,7 @@ div {
 }
 
 
-Input: {"url": "https://en.wikipedia.org/style.css", "structure": "div>(p>a*)*"}
+Input: {"url": "https://en.wikipedia.org/links.css", "structure": "div>(p>a*)*"}
 Output: div {
     margin-bottom: 1.5rem;
 }
@@ -122,7 +122,7 @@ a:hover {
 }
 
 
-Input: {"url": "https://en.wikipedia.org/style.css", "structure": "div>(ol.references>li>a*)*"}
+Input: {"url": "https://en.wikipedia.org/references.css", "structure": "div>(ol.references>li>a*)*"}
 Output: .references {
     list-style-type: decimal;
     padding-left: 2rem;

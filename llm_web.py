@@ -254,12 +254,15 @@ def catch_all(path=""):
                             const structure = element.getAttribute('structure') || false;
 
                             if (structure) {
+                                const standardTags = ['div', 'span', 'p'];
                                 const link = document.createElement('link');
                                 link.rel = 'stylesheet';
-                                const urlParts = dynamicUrl.split("/")
+                                const urlParts = dynamicUrl.split("/");
                                 const lastEmptyIndex = urlParts.lastIndexOf("");
-                                const url = urlParts[lastEmptyIndex+1];
-                                link.href = `/${url}/style.css?structure=${structure}`;
+                                const url = urlParts[lastEmptyIndex + 1];
+                                const tagName = element.tagName.toLowerCase();
+                                const styleFileName = standardTags.includes(tagName) ? 'style.css' : `${tagName}.css`;
+                                link.href = `/${url}/${styleFileName}?structure=${structure}`;
                                 document.head.appendChild(link);
                             }
 
