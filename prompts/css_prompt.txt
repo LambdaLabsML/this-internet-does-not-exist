@@ -1,5 +1,4 @@
 Respond with the raw {{FILE_TYPE}}-file that matches the URL.
-{{OPTIONAL_DATA}}
 
 Rules:
 1. ALWAYS return the plain {{FILE_TYPE}}-file directly. Do not use markdown code blocks and do not prepend the file with any comment.
@@ -10,7 +9,7 @@ Rules:
 
 
 Example:
-Input: https://en.wikipedia.org/style.css?structure=body>(header+main+footer)
+Input: {"url": "https://en.wikipedia.org/style.css", "structure": "body>(header+main+footer)"}
 Output: body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -64,7 +63,7 @@ footer {
 }
 
 
-Input: https://en.wikipedia.org/style.css?structure=main>(h2+div)*
+Input: {"url": "https://en.wikipedia.org/style.css", "structure": "main>(h2+div)*"}
 Output: main {
     padding: 1rem;
     flex: 1;
@@ -95,7 +94,7 @@ div {
 }
 
 
-Input: https://en.wikipedia.org/style.css?structure=div>(p>a*)*
+Input: {"url": "https://en.wikipedia.org/style.css", "structure": "div>(p>a*)*"}
 Output: div {
     margin-bottom: 1.5rem;
 }
@@ -123,7 +122,7 @@ a:hover {
 }
 
 
-Input: https://en.wikipedia.org/style.css?structure=div>(ol.references>li>a*)*
+Input: {"url": "https://en.wikipedia.org/style.css", "structure": "div>(ol.references>li>a*)*"}
 Output: .references {
     list-style-type: decimal;
     padding-left: 2rem;
