@@ -73,10 +73,10 @@ Output: <h2 id="introduction">Introduction</h2>
 <div data-dynamic-content-url="https://en.wikipedia.org/Obelus?query_section=similar-symbols" structure="(p>a*)*"></div>
 
 <h2 id="see-also">See Also</h2>
-<div data-dynamic-content-url="https://en.wikipedia.org/Obelus?query_section=see-also" structure="(p>a*)*"></div>
+<div data-dynamic-content-url="https://en.wikipedia.org/Obelus?query_section=see-also" structure="(p>ul>(li>a)*)*"></div>
 
 <h2 id="references">References</h2>
-<div data-dynamic-content-url="https://en.wikipedia.org/Obelus?query_section=references" structure="(p>a*)*"></div>
+<div data-dynamic-content-url="https://en.wikipedia.org/Obelus?query_section=references" structure="(p>ul>(li>a)*)*"></div>
 
 
 Example: Shows how dynamic sections can provide dense, long content.
