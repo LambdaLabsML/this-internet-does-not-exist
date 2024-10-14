@@ -270,9 +270,13 @@ def catch_all(path=""):
                             fetch(dynamicUrl, fetchOptions)
                                 .then(res => res.text())
                                 .then(html => {
-                                    const tempContainer = document.createElement('div');
-                                    tempContainer.innerHTML = html;
-                                    element.replaceWith(...tempContainer.childNodes);
+                                    // option 1: replace element with dynamic html
+                                    //const tempContainer = document.createElement('div');
+                                    //tempContainer.innerHTML = html;
+                                    //element.replaceWith(...tempContainer.childNodes);
+
+                                    // option 2: insert dynamic html into element
+                                    element.innerHTML = html;
                                 })
                                 .catch(console.error);
                         }
