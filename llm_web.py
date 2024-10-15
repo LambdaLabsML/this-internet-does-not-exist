@@ -8,6 +8,7 @@ import mimetypes
 import os
 import re
 import tempfile
+import urllib.parse
 from bs4 import BeautifulSoup
 from flask import Flask, request
 from openai import OpenAI
@@ -166,7 +167,8 @@ def catch_all(path=""):
 
     # api call
     additional_data = request.form.to_dict() or {}
-    user_request = json.dumps({"url": html.unescape(full_url), **additional_data})
+    unescaped_full_url = urllib.parse.unquote(full_url)
+    user_request = json.dumps({"url": unescaped_full_url, **additional_data}, ensure_ascii=False)
     print("User requested:", user_request)
     response = client.chat.completions.create(
         model=args.model_name,
