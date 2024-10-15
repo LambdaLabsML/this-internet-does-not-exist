@@ -277,6 +277,21 @@ def catch_all(path=""):
 
                                     // option 2: insert dynamic html into element
                                     element.innerHTML = html;
+
+                                    // Extract all script tags
+                                    const scripts = element.querySelectorAll('script');
+                                    scripts.forEach(script => {
+                                        const newScript = document.createElement('script');
+                                        if (script.src) {
+                                            // If the script has a src attribute, copy it and load the external script
+                                            newScript.src = script.src;
+                                            newScript.async = true;  // Preserve async behavior
+                                        } else {
+                                            // Inline script - copy the content
+                                            newScript.textContent = script.textContent;
+                                        }
+                                        document.body.appendChild(newScript);  // Append script to body to execute
+                                    });
                                 })
                                 .catch(console.error);
                         }
