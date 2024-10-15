@@ -261,8 +261,9 @@ def catch_all(path=""):
                                 const lastEmptyIndex = urlParts.lastIndexOf("");
                                 const url = urlParts[lastEmptyIndex + 1];
                                 const tagName = element.tagName.toLowerCase();
-                                const styleFileName = standardTags.includes(tagName) ? 'style.css' : `${tagName}.css`;
-                                link.href = `/${url}/${styleFileName}?structure=${structure}`;
+                                const isStandardTag = standardTags.includes(tagName)
+                                const styleFileName = isStandardTag ? 'style.css' : `${tagName}.css`;
+                                link.href = `/${url}/${styleFileName}?structure=${encodeURIComponent((isStandardTag ? "" : tagName + ">" ) + structure)}`;
                                 document.head.appendChild(link);
                             }
 
