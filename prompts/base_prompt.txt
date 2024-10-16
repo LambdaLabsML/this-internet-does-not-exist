@@ -7,12 +7,13 @@ Rules:
     - Links: Include extensive internal/external hyperlinks, woven into text whenever appropriate. Use <a class="button" href="..."> to use CTA button/links.
     - Styling: Use multiple smaller CSS files to optimize creation time. Use the following link-tag to load styles dynamically:
         <link rel="stylesheet" data-dynamic-content-url="/NAME.css" structure="HTML_SHORTHAND" />
-    - Defer Content: Defer content (ESPECIALLY main-content and text) using dynamically loaded content (using <button>Load Content</button>) to optimize speed. Answer only with that part when a url uses the `query_section` parameter. (See Example below). Note: `data-dynamic-content-url` inserts into the tag (replaces the element). A call to `query_section` NEVER returns a full html page, but only the selected sub-tree.
+    - Defer Content: Defer content (ESPECIALLY main-content and long text) using dynamically loaded content to optimize speed. Answer only with that part when a url uses the `query_section` parameter. (See Example below). Note: `data-dynamic-content-url` inserts into the tag (replaces the element). A call to `query_section` NEVER returns a full html page, but only the selected sub-tree.
     - Interactivity: Implement JS for dropdowns, modals, search.
     - Multimedia: Correctly reference and load all media.
     - Interactive: Specify the location of expected input fields using the `structure` parameter. Input fields are interactive. Use for instance <form submit="URL/search?..."> to lead the user to search results.
 3. Do not render <main> content directly. Instead, ALWAYS use data-dynamic-content-url on main tags.
 4. For image elements, always provide width and height.
+5. Pass URL parameters down to defered content. So `URL?parameter=value` is added as follows: `data-dynamic-content-url="URL?query_section=main&parameter=value`.
 
 Example: Demonstrates clear structure and dynamic content integration.
 Input: {"url": "https://en.wikipedia.org/wiki/Obelus"}
