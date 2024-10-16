@@ -1,4 +1,7 @@
-const loadAllSections = () => {
+
+window.loadedUrls = window.loadedUrls || new Set();
+
+window.loadAllSections = window.loadAllSections || (() => {
     document.querySelectorAll('[data-dynamic-content-url]').forEach(element => {
         if (element.hasAttribute('data-processed')) return;
         element.setAttribute('data-processed', 'true');
@@ -58,8 +61,21 @@ const loadAllSections = () => {
                 const tagName = element.tagName.toLowerCase();
                 const isStandardTag = standardTags.includes(tagName)
                 const styleFileName = isStandardTag ? 'style.css' : `${tagName}.css`;
-                link.href = `/${url}/${styleFileName}?structure=${encodeURIComponent((isStandardTag ? "" : tagName + ">") + structure)}`;
-                document.head.appendChild(link);
+                const fullUrl = `/${url}/${styleFileName}?structure=${encodeURIComponent((isStandardTag ? "" : tagName + ">") + structure)}`;
+                if (!window.loadedUrls.has(fullUrl)) {
+                    window.loadedUrls.add(fullUrl);
+                    link.href = fullUrl;
+                    document.head.appendChild(link);
+                } else {
+                    console.log(`style already loaded: ${fullUrl}`);
+                }
+            }
+
+            if (!window.loadedUrls.has(dynamicUrl)) {
+                window.loadedUrls.add(dynamicUrl);
+            } else {
+                console.log(`content already loaded: ${fullUrl}`);
+                return;
             }
 
             element.innerHTML = '<span style="display:inline-block; opacity:0.5;">Loading content...</span>';
@@ -92,9 +108,9 @@ const loadAllSections = () => {
                 .catch(console.error);
         }
     });
-};
+});
 
-const observer = new MutationObserver((mutations) => {
+window.observer = window.observer || new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
         if (mutation.type === 'childList') {
             mutation.addedNodes.forEach((node) => {
