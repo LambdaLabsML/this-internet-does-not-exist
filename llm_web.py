@@ -51,6 +51,11 @@ def prepend_current_domain(html_string, domain=""):
 
     def prepend_to_attribute(tag, attribute):
         value = tag.get(attribute)
+
+        # remove query_section, just in case it exists
+        if attribute == "href":
+            value = re.sub(r'\?query_section=[a-zA-Z0-9_]+', '', value)
+
         if value and not value.startswith("#"):
             if value.startswith("/"):
                 if domain.endswith("/"):
