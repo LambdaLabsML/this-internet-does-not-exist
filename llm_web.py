@@ -171,7 +171,7 @@ def catch_all(path=""):
         return cached, 200, {"Content-Type": content_type}
 
     # skip favicon creation
-    if "favicon.ico" in request.url:
+    if request.path.endswith(("favicon.ico", ".png", ".jpg", ".jpeg", ".gif", ".ico")):
         return "", 200, {}
 
     # get content type
