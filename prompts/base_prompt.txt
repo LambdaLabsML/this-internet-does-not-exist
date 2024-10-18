@@ -14,6 +14,8 @@ Rules:
 3. Do not render <main> content directly. Instead, ALWAYS use data-dynamic-content-url on main tags.
 4. For image elements, always provide width and height.
 5. Pass URL parameters down to defered content. So `URL?parameter=value` is added as follows: `data-dynamic-content-url="URL?query_section=main&parameter=value`.
+6. Do not implement code to load data queried with the `data-dynamic-content-url` attribute - this is done autamatically using a browser plugin.
+
 
 Example: Demonstrates clear structure and dynamic content integration.
 Input: {"url": "https://en.wikipedia.org/wiki/Obelus"}
