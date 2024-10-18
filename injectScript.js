@@ -61,7 +61,9 @@ window.loadAllSections = window.loadAllSections || (() => {
                 const tagName = element.tagName.toLowerCase();
                 const isStandardTag = standardTags.includes(tagName)
                 const styleFileName = isStandardTag ? 'style.css' : `${tagName}.css`;
-                const fullUrl = `/${url}/${styleFileName}?structure=${encodeURIComponent((isStandardTag ? "" : tagName + ">") + structure)}`;
+                const fullUrl = `/${url}/${styleFileName}`;
+                fetchOptions.body.structure = (isStandardTag ? "" : tagName + ">") + structure;
+
                 if (!window.loadedUrls.has(fullUrl)) {
                     window.loadedUrls.add(fullUrl);
                     link.href = fullUrl;
