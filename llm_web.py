@@ -45,6 +45,21 @@ with open("index.html", "r") as file:
 # Helper #
 # ------ #
 
+
+def extract_first_code_block(text: str) -> str:
+    # Regular expression to capture the content of the first code block
+    pattern = r'```(?:\w+)?\s*([\s\S]*?)\s*```'
+    
+    # Search for the first occurrence of the pattern
+    match = re.search(pattern, text)
+    
+    # If a match is found, return the captured content; otherwise, return None or an empty string
+    if match:
+        return match.group(1).strip()
+    else:
+        return text
+
+
 def prepend_current_domain(html_string, domain=""):
     soup = BeautifulSoup(html_string, 'html.parser')
     tags_attributes = ['href', 'src', 'action', 'data-dynamic-content-url']
@@ -191,6 +206,9 @@ def catch_all(path=""):
         presence_penalty=0
     )
     response_data = response.choices[0].message.content
+
+    # remove code block ticks
+    response_data = extract_first_code_block(response_data)
 
     # silently remap all links to proxy-links (we want to keep the user in the AI web)
     try:
