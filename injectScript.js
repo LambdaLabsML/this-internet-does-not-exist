@@ -133,6 +133,10 @@ window.observer = window.observer || new MutationObserver((mutations) => {
     });
 });
 
+if (!window.initalized) {
+
+window.initalized = true;
+
 observer.observe(document.body, {
     childList: true,
     subtree: true
@@ -141,3 +145,5 @@ observer.observe(document.body, {
 document.addEventListener("DOMContentLoaded", () => {
     loadAllSections();
 });
+
+}
