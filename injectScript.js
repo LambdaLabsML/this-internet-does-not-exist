@@ -1,8 +1,10 @@
-
+// Initialize a Set to keep track of loaded URLs
 window.loadedUrls = window.loadedUrls || new Set();
 
+// Function to load all sections with 'defercontent' tag
 window.loadAllSections = window.loadAllSections || (() => {
     document.querySelectorAll('defercontent').forEach(element => {
+        // Skip already processed elements
         if (element.hasAttribute('data-processed')) return;
         element.setAttribute('data-processed', 'true');
 
@@ -10,10 +12,11 @@ window.loadAllSections = window.loadAllSections || (() => {
         console.log(dynamicUrl);
         const tagName = element.tagName.toLowerCase();
 
+        // Prepare POST data from element attributes
         const postData = new FormData();
         Array.from(element.attributes).forEach(attr => {
             if (attr.name !== 'data-processed') {
-                postData.append(attr.name, attr.value)
+                postData.append(attr.name, attr.value);
             }
         });
 
@@ -22,6 +25,7 @@ window.loadAllSections = window.loadAllSections || (() => {
             body: postData
         };
 
+        // Handle 'link' tags with rel='stylesheet'
         if (tagName === 'link' && element.rel === 'stylesheet') {
             fetch(dynamicUrl, fetchOptions)
                 .then(res => res.text())
@@ -33,6 +37,7 @@ window.loadAllSections = window.loadAllSections || (() => {
                 })
                 .catch(console.error);
         } else if (tagName === 'script') {
+            // Handle 'script' tags
             fetch(dynamicUrl, fetchOptions)
                 .then(res => res.text())
                 .then(js => {
@@ -50,6 +55,7 @@ window.loadAllSections = window.loadAllSections || (() => {
                 })
                 .catch(console.error);
         } else {
+            // Handle other tags
             const structure = element.getAttribute('structure') || false;
 
             if (structure) {
@@ -79,7 +85,7 @@ window.loadAllSections = window.loadAllSections || (() => {
                             const styleTag = document.createElement('style');
                             styleTag.innerHTML = cssContent;
                             document.head.appendChild(styleTag);
-                            console.log(fullUrl, styleTag)
+                            console.log(fullUrl, styleTag);
                         })
                         .catch(error => {
                             console.error('Error fetching CSS:', error);
@@ -98,19 +104,20 @@ window.loadAllSections = window.loadAllSections || (() => {
                 return;
             }*/
 
+            // Display loading message
             element.innerHTML = '<span style="display:inline-block; opacity:0.5;">Loading content...</span>';
             fetch(dynamicUrl, fetchOptions)
                 .then(res => res.text())
                 .then(html => {
-                    // option 1: replace element with dynamic html
+                    // Option 1: replace element with dynamic HTML
                     const tempContainer = document.createElement('div');
                     tempContainer.innerHTML = html;
                     element.replaceWith(...tempContainer.childNodes);
 
-                    // option 2: insert defercontent html into element
-                    //element.innerHTML = html;
+                    // Option 2: insert defercontent HTML into element
+                    // element.innerHTML = html;
 
-                    // Extract all script tags
+                    // Extract and execute all script tags
                     const scripts = element.querySelectorAll('script');
                     scripts.forEach(script => {
                         const newScript = document.createElement('script');
@@ -130,7 +137,7 @@ window.loadAllSections = window.loadAllSections || (() => {
     });
 });
 
-
+// MutationObserver to detect added nodes and load sections if necessary
 window.observer = window.observer || new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
         if (mutation.type === 'childList') {
@@ -152,18 +159,16 @@ window.observer = window.observer || new MutationObserver((mutations) => {
     });
 });
 
-
+// Initialize observer and load sections on DOMContentLoaded
 if (!window.initalized) {
+    window.initalized = true;
 
-window.initalized = true;
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
 
-observer.observe(document.body, {
-    childList: true,
-    subtree: true
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-    loadAllSections();
-});
-
+    document.addEventListener("DOMContentLoaded", () => {
+        loadAllSections();
+    });
 }
