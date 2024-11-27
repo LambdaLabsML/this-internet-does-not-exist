@@ -12,6 +12,10 @@ import urllib.parse
 from bs4 import BeautifulSoup
 from flask import Flask, request
 from openai import OpenAI
+from colorama import Fore, Style, init
+
+# Initialize colorama
+init(autoreset=True)
 
 
 def parse_arguments():
@@ -38,10 +42,6 @@ with open(args.inject_script, "r", encoding="utf-8") as file:
     INJECT_SCRIPT = file.read()
 with open("index.html", "r", encoding="utf-8") as file:
     INDEX_HTML = file.read()
-
-
-print(CSS_PROMPT)
-
 
 
 # ------ #
@@ -77,7 +77,7 @@ def prepend_current_domain(html_string, domain=""):
     This function processes an HTML string and prepends the specified domain to the 'href', 'src', 
     and 'action' attributes of relevant tags. It also processes 'link' tags with rel="stylesheet" 
     and modifies 'script' tags to replace 'http://' and 'https://' with '/https://'. Additionally, 
-    it removes 'script' tags containing the word "dynamic".
+    it removes 'script' tags containing the word "defercontent".
 
     Args:
         html_string (str): The HTML content as a string.
@@ -86,18 +86,21 @@ def prepend_current_domain(html_string, domain=""):
     Returns:
         str: The modified HTML content as a string.
     """
+    # print(Fore.GREEN + "Original HTML:", html_string)
     soup = BeautifulSoup(html_string, 'html.parser')
     tags_attributes = ['href', 'src', 'action']
 
     def prepend_to_attribute(tag, attribute):
         value = tag.get(attribute)
+        print(Fore.YELLOW + f"Processing tag: {tag.name}, attribute: {attribute}, value: {value}")
 
         # remove query_section, just in case it exists
-        if attribute == "href":
-            print("replacing", value, domain)
+        if attribute == "href" and "?query_section=" in value:
+            print(Fore.YELLOW + "Removing query_section from", value)
             value = re.sub(r'\?query_section=[a-zA-Z0-9_]+', '', value)
 
         if value and not value.startswith("#"):
+            print(Fore.CYAN + f"Found {attribute}: {tag[attribute]}")
             if value.startswith("/"):
                 if domain.endswith("/"):
                     tag[attribute] = f"/{domain[:-1]}{value}" if domain != "/" else f"{value}"
@@ -105,12 +108,14 @@ def prepend_current_domain(html_string, domain=""):
                     tag[attribute] = f"/{domain}{value}" if domain != "/" else f"{value}"
             else:
                 tag[attribute] = f"/{value}"
+            print(Fore.CYAN + f"Updated {attribute} to: {tag[attribute]}")
 
         # Check if the tag is a link rel="stylesheet"
-        if tag.name == "link" and tag.get("rel") == ["stylesheet"]:
-            href_value = tag.get("href")
-            if href_value and "http" not in href_value:
-                tag["href"] = f"/{domain}{href_value}" if not domain.endswith("/") else f"/{domain[:-1]}{href_value}"
+        #if tag.name == "link" and tag.get("rel") == ["stylesheet"]:
+        #    href_value = tag.get("href")
+        #    if href_value and "http" not in href_value:
+        #        tag["href"] = f"/{domain}{href_value}" if not domain.endswith("/") else f"/{domain[:-1]}{href_value}"
+        #        print(Fore.CYAN + f"Updated stylesheet href to: {tag['href']}")
 
     for attr in tags_attributes:
         for t in soup.find_all(attrs={attr: True}):
@@ -121,15 +126,20 @@ def prepend_current_domain(html_string, domain=""):
     script_tags = soup.find_all('script')
     for script in script_tags:
         if script.string:  # Ensure the script tag has text content
+            print(Fore.YELLOW + f"Processing script tag: {script}")
             # Replace http:// and https:// with abc://
             updated_script_content = re.sub(r'https?://', f'/https://', script.string)
             script.string.replace_with(updated_script_content)
+            print(Fore.CYAN + f"Updated script content: {updated_script_content}")
 
-            # heuristic to remove all scripts involving the dynamic tag
-            if script.string and "dynamic" in script.string:
+            # heuristic to remove all scripts involving the defercontent tag
+            if script.string and "defercontent" in script.string:
+                print(Fore.RED + "Removing defercontent script tag")
                 script.decompose()
 
-    return str(soup)
+    modified_html = str(soup)
+    # print(Fore.GREEN + "Modified HTML:", modified_html)
+    return modified_html
 
 
 # ------- #
@@ -138,7 +148,7 @@ def prepend_current_domain(html_string, domain=""):
 
 # Define the temporary directory for caching
 cache_dir = tempfile.gettempdir() if args.persistent_cache and not args.no_persistent_cache else tempfile.mkdtemp()
-print("Cache Dir:", cache_dir)
+print(Fore.GREEN + "Cache Dir:", cache_dir)
 
 def _get_cache_file_path(url):
     # Generate a unique filename based on the URL hash
@@ -209,14 +219,14 @@ def catch_all(path=""):
 
     # reconstruct the "virtual" URL
     full_url = f"{domain}/{url}"
-    print(f"DOMAIN/URL={domain}/{url}")
+    print(Fore.CYAN + f"DOMAIN/URL={domain}/{url}", "FULL_URL", full_url)
 
     additional_data = request.form.to_dict() or {}
     additional_data_str = json.dumps(additional_data, sort_keys=True)  # Convert dict to sorted JSON string
     cache_key = f"{full_url}+{additional_data_str}"
     unescaped_full_url = urllib.parse.unquote(full_url)
     user_request = json.dumps({"url": unescaped_full_url, **additional_data}, ensure_ascii=False)
-    print("User requested:", user_request)
+    print(Fore.BLUE + "User requested:", user_request)
 
     # use cache
     cached, content_type = load_cached(cache_key)
@@ -238,7 +248,8 @@ def catch_all(path=""):
     #   - OPTIONAL_DATA -> POST request data (for forms, etc.)
     #   - URL_PATH -> virtual url
     #   - FILE_TYPE -> content_type
-    print("content-type", content_type)
+    print(Fore.MAGENTA + "For request:", user_request)
+    print(Fore.MAGENTA + "content-type", content_type)
     prompt_used = CSS_PROMPT if "css" in content_type else BASE_PROMPT
     prompt = prompt_used
     prompt = prompt.replace("{{URL_PATH}}", full_url)
@@ -267,12 +278,11 @@ def catch_all(path=""):
     try:
 	    response_data = prepend_current_domain(response_data, domain+"/")
     except Exception as e:
-        print("error", str(e))
+        print(Fore.RED + "error", str(e))
         pass
 
-    print(content_type)
-    print(response_data)
-
+    print(Fore.GREEN + content_type)
+    print(Fore.GREEN + response_data)
 
     # unescape in case of javascript files
     if content_type in ["text/javascript", "text/css"]:
