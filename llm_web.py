@@ -25,6 +25,7 @@ def parse_arguments():
     parser.add_argument("--base_prompt", type=str, default="prompts/base_prompt.txt", help="Path to the base prompt file")
     parser.add_argument("--css_prompt", type=str, default="prompts/css_prompt.txt", help="Path to the base prompt file")
     parser.add_argument("--inject_script", type=str, default="injectScript.js", help="Path to the script to be injected into all webpages.")
+    parser.add_argument("--dev", action='store_true', help="Enable development mode with dynamic script reloading")
     return parser.parse_args()
 
 args = parse_arguments()
@@ -171,6 +172,10 @@ app = Flask(__name__)
 
 @app.route("/inject_script.js")
 def inject_script():
+    if args.dev:
+        with open(args.inject_script, "r", encoding="utf-8") as file:
+            inject_script_content = file.read()
+        return inject_script_content, 200, {'Content-Type': 'application/javascript'}
     return INJECT_SCRIPT, 200, {'Content-Type': 'application/javascript'}
 
 @app.route("/", methods = ['POST', 'GET'])
