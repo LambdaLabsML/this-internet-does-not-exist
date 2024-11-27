@@ -2,16 +2,17 @@
 window.loadedUrls = window.loadedUrls || new Set();
 
 window.loadAllSections = window.loadAllSections || (() => {
-    document.querySelectorAll('[data-dynamic-content-url]').forEach(element => {
+    document.querySelectorAll('defercontent').forEach(element => {
         if (element.hasAttribute('data-processed')) return;
         element.setAttribute('data-processed', 'true');
 
-        const dynamicUrl = element.dataset.dynamicContentUrl;
+        const dynamicUrl = window.location.href;
+        console.log(dynamicUrl);
         const tagName = element.tagName.toLowerCase();
 
         const postData = new FormData();
         Array.from(element.attributes).forEach(attr => {
-            if (attr.name !== 'data-dynamic-content-url' && attr.name !== 'data-processed') {
+            if (attr.name !== 'data-processed') {
                 postData.append(attr.name, attr.value)
             }
         });
@@ -52,45 +53,62 @@ window.loadAllSections = window.loadAllSections || (() => {
             const structure = element.getAttribute('structure') || false;
 
             if (structure) {
-                const standardTags = ['div', 'span', 'p'];
-                const link = document.createElement('link');
-                link.rel = 'stylesheet';
                 const urlParts = dynamicUrl.split("/");
                 const lastEmptyIndex = urlParts.lastIndexOf("");
                 const url = urlParts[lastEmptyIndex + 1];
-                const tagName = element.tagName.toLowerCase();
-                const isStandardTag = standardTags.includes(tagName)
-                const styleFileName = isStandardTag ? 'style.css' : `${tagName}.css`;
-                const fullUrl = `/${url}/${styleFileName}`;
-                fetchOptions.body.structure = (isStandardTag ? "" : tagName + ">") + structure;
+                const fullUrl = `/${url}/style.css`;
+                const cacheKey = `${fullUrl}+structure=${structure}`;  // Combine URL with serialized fetch options
 
-                if (!window.loadedUrls.has(fullUrl)) {
-                    window.loadedUrls.add(fullUrl);
-                    link.href = fullUrl;
-                    document.head.appendChild(link);
+                // Check if the cache key (including fetchOptions) exists in window.loadedUrls
+                if (!window.loadedUrls.has(cacheKey)) {
+                    window.loadedUrls.add(cacheKey);
+
+                    // Use fetch() to make a POST request (with additional parameters) to fetch the CSS
+                    fetch(fullUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: structure  // Send the structure as raw text
+                    })
+                        .then(response => {
+                            if (!response.ok) { throw new Error(`Failed to load stylesheet: ${response.statusText}`); }
+                            return response.text(); // Get the response as text (CSS content)
+                        })
+                        .then(cssContent => {
+                            const styleTag = document.createElement('style');
+                            styleTag.innerHTML = cssContent;
+                            document.head.appendChild(styleTag);
+                            console.log(fullUrl, styleTag)
+                        })
+                        .catch(error => {
+                            console.error('Error fetching CSS:', error);
+                        });
                 } else {
-                    console.log(`style already loaded: ${fullUrl}`);
+                    console.log(`style already loaded: ${cacheKey}`);
                 }
             }
 
+            /*
+            TODO: 
             if (!window.loadedUrls.has(dynamicUrl)) {
                 window.loadedUrls.add(dynamicUrl);
             } else {
                 console.log(`content already loaded: ${fullUrl}`);
                 return;
-            }
+            }*/
 
             element.innerHTML = '<span style="display:inline-block; opacity:0.5;">Loading content...</span>';
             fetch(dynamicUrl, fetchOptions)
                 .then(res => res.text())
                 .then(html => {
                     // option 1: replace element with dynamic html
-                    //const tempContainer = document.createElement('div');
-                    //tempContainer.innerHTML = html;
-                    //element.replaceWith(...tempContainer.childNodes);
+                    const tempContainer = document.createElement('div');
+                    tempContainer.innerHTML = html;
+                    element.replaceWith(...tempContainer.childNodes);
 
-                    // option 2: insert dynamic html into element
-                    element.innerHTML = html;
+                    // option 2: insert defercontent html into element
+                    //element.innerHTML = html;
 
                     // Extract all script tags
                     const scripts = element.querySelectorAll('script');
@@ -112,17 +130,18 @@ window.loadAllSections = window.loadAllSections || (() => {
     });
 });
 
+
 window.observer = window.observer || new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
         if (mutation.type === 'childList') {
             mutation.addedNodes.forEach((node) => {
                 if (node.nodeType === 1) { // Check if the node is an element
-                    // Check the node itself
-                    if (node.hasAttribute('data-dynamic-content-url')) {
+                    // Check the node itself if it's a 'defercontent' tag
+                    if (node.tagName.toLowerCase() === 'defercontent') {
                         loadAllSections();
                     }
-                    // Check within the subtree of the node
-                    node.querySelectorAll('[data-dynamic-content-url]').forEach(subNode => {
+                    // Check within the subtree of the node for any 'defercontent' tags
+                    node.querySelectorAll('defercontent').forEach(subNode => {
                         if (!subNode.hasAttribute('data-processed')) {
                             loadAllSections();
                         }
@@ -132,6 +151,7 @@ window.observer = window.observer || new MutationObserver((mutations) => {
         }
     });
 });
+
 
 if (!window.initalized) {
 
