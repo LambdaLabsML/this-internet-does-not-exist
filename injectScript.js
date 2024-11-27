@@ -63,7 +63,7 @@ window.loadAllSections = window.loadAllSections || (() => {
                 const lastEmptyIndex = urlParts.lastIndexOf("");
                 const url = urlParts[lastEmptyIndex + 1];
                 const fullUrl = `/${url}/style.css`;
-                const cacheKey = `${fullUrl}+structure=${structure}`;  // Combine URL with serialized fetch options
+                const cacheKey = `${fullUrl}+structure=${structure}+options=${JSON.stringify(fetchOptions)}`;  // Combine URL with serialized fetch options
 
                 // Check if the cache key (including fetchOptions) exists in window.loadedUrls
                 if (!window.loadedUrls.has(cacheKey)) {
@@ -95,14 +95,12 @@ window.loadAllSections = window.loadAllSections || (() => {
                 }
             }
 
-            /*
-            TODO: 
-            if (!window.loadedUrls.has(dynamicUrl)) {
-                window.loadedUrls.add(dynamicUrl);
+            if (!window.loadedUrls.has(cacheKey)) {
+                window.loadedUrls.add(cacheKey);
             } else {
-                console.log(`content already loaded: ${fullUrl}`);
+                console.log(`content already loaded: ${cacheKey}`);
                 return;
-            }*/
+            }
 
             // Display loading message
             element.innerHTML = '<span style="display:inline-block; opacity:0.5;">Loading content...</span>';
