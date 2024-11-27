@@ -169,6 +169,10 @@ def save_cached(url, content, content_type):
 
 app = Flask(__name__)
 
+@app.route("/inject_script.js")
+def inject_script():
+    return INJECT_SCRIPT, 200, {'Content-Type': 'application/javascript'}
+
 @app.route("/", methods = ['POST', 'GET'])
 @app.route("/<path:path>", methods = ['POST', 'GET'])
 def catch_all(path=""):
@@ -273,7 +277,7 @@ def catch_all(path=""):
     if content_type == "text/html":
         response_data = response_data.replace(
             "</body>",
-            "<script>" + INJECT_SCRIPT + "</script></body>"
+            '<script src="/inject_script.js"></script></body>'
         )
 
     # save cache
