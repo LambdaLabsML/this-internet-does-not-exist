@@ -257,19 +257,23 @@ def catch_all(path=""):
 
     # api call
 
-    response = client.chat.completions.create(
-        model=args.model_name,
-        messages=[
-            {"role": "system", "content": prompt},
-            {"role": "user", "content": user_request}
-        ],
-        temperature=0.0,
-        max_tokens=4096,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0
-    )
-    # check if choices is None:
+
+    # retry request 3 times
+    for i in range(3):
+        response = client.chat.completions.create(
+            model=args.model_name,
+            messages=[
+                {"role": "system", "content": prompt},
+                {"role": "user", "content": user_request}
+            ],
+            temperature=0.0,
+            # max_tokens=4096,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+        )
+        if response.choices is not None:
+            break
     if response.choices is None:
         return f"No response from the AI for the request: {user_request}", 500, {}
     response_data = response.choices[0].message.content
