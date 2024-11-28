@@ -61,7 +61,15 @@ window.loadAllSections = window.loadAllSections || (() => {
             if (structure) {
                 const urlParts = dynamicUrl.split("/");
                 const lastEmptyIndex = urlParts.lastIndexOf("");
-                const url = urlParts[lastEmptyIndex + 1];
+                if (lastEmptyIndex === -1) {
+                    console.error('Invalid URL:', dynamicUrl);
+                    return;
+                }
+                if (lastEmptyIndex + 2 >= urlParts.length) {
+                    console.error('Invalid URL:', dynamicUrl);
+                    return;
+                }
+                const url = urlParts[lastEmptyIndex + 2];
                 const fullUrl = `/${url}/style.css`;
                 const cacheKey = `${fullUrl}+structure=${structure}+options=${JSON.stringify(fetchOptions)}`;  // Combine URL with serialized fetch options
 
@@ -94,6 +102,8 @@ window.loadAllSections = window.loadAllSections || (() => {
                     console.log(`style already loaded: ${cacheKey}`);
                 }
             }
+
+            const cacheKey = `${dynamicUrl}+options=${JSON.stringify(fetchOptions)}`;  // Define cacheKey for non-structure elements
 
             if (!window.loadedUrls.has(cacheKey)) {
                 window.loadedUrls.add(cacheKey);
