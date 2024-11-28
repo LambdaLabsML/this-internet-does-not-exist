@@ -269,6 +269,9 @@ def catch_all(path=""):
         frequency_penalty=0,
         presence_penalty=0
     )
+    # check if choices is None:
+    if response.choices is None:
+        return f"No response from the AI for the request: {user_request}", 500, {}
     response_data = response.choices[0].message.content
 
     # remove code block ticks
