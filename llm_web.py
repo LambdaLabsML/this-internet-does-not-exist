@@ -302,7 +302,7 @@ def catch_all(path=""):
         if response.choices is not None:
             break
     if response.choices is None:
-        return f"No response from the AI for the request: {user_request}", 500, {}
+        return f"ERROR: No response from the AI for the request: {user_request}", 500, {}
     response_data = response.choices[0].message.content
 
     # remove code block ticks
