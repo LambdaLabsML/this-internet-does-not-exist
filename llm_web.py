@@ -173,6 +173,11 @@ def save_cached(url, content, content_type):
         json.dump(cache_data, cache_file)
 
 
+def get_parent_request_from_cache(url):
+    """Get the cached response for a URL-only request."""
+    parent_cache_key = f"{url}+{{}}"  # Empty JSON object as string
+    return load_cached(parent_cache_key)
+
 
 # ------------ #
 # Flask Server #
@@ -225,8 +230,25 @@ def catch_all(path=""):
     additional_data_str = json.dumps(additional_data, sort_keys=True)  # Convert dict to sorted JSON string
     cache_key = f"{full_url}+{additional_data_str}"
     unescaped_full_url = urllib.parse.unquote(full_url)
-    user_request = json.dumps({"url": unescaped_full_url, **additional_data}, ensure_ascii=False)
-    print(Fore.BLUE + "User requested:", user_request)
+    
+    # Check for parent request if additional data exists
+    parent_request = None
+    parent_content = None
+    if additional_data:
+        parent_content, _ = get_parent_request_from_cache(full_url)
+        if parent_content:
+            parent_request = json.dumps({"url": full_url })
+    
+    # Include parent request in the user request if available
+    user_request_data = {"url": unescaped_full_url, **additional_data}
+    # if parent_request:
+        # user_request_data["parent_request"] = parent_request
+    
+    user_request = json.dumps(user_request_data, ensure_ascii=False)
+    if parent_content:
+        print(Fore.BLUE + "User requested with parent knowledge:", user_request)
+    else:
+        print(Fore.BLUE + "User requested:", user_request)
 
     # use cache
     cached, content_type = load_cached(cache_key)
@@ -263,6 +285,11 @@ def catch_all(path=""):
         response = client.chat.completions.create(
             model=args.model_name,
             messages=[
+                {"role": "system", "content": prompt},
+                {"role": "user", "content": parent_request},
+                {"role": "user", "content": parent_content},
+                {"role": "user", "content": user_request}
+            ] if parent_content else [
                 {"role": "system", "content": prompt},
                 {"role": "user", "content": user_request}
             ],
