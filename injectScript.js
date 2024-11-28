@@ -90,7 +90,12 @@ window.loadAllSections = window.loadAllSections || (() => {
 
             if (structure) {
                 const urlParts = dynamicUrl.split("/");
-                const url = urlParts[1];
+                let url = urlParts[1];
+                if (urlParts[1].startsWith("http") && urlParts.length > 3) {
+                    url = urlParts.slice(3).join("/");
+                    // if ends with /
+                    if (url.endsWith("/")) url = url.slice(0, -1);
+                }
                 const fullUrl = `/${url}/style.css`;
                 const structureCacheKey = `${fullUrl}+structure=${structure}+options=${JSON.stringify(formDataToObject(postData))}`;  // Combine URL with serialized fetch options
 
