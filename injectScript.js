@@ -1,6 +1,7 @@
 // Initialize a dictionary to keep track of loaded URLs and their status
 window.loadedUrls = window.loadedUrls || {};
 window.showLoaded = window.showLoaded || false;
+window.deferredCssSelectors = window.deferredCssSelectors || new Set();
 
 // Helper function to convert FormData to a plain object
 function formDataToObject(formData) {
@@ -11,28 +12,28 @@ function formDataToObject(formData) {
     return obj;
 }
 
-// Function to load all sections with 'defercontent' tag
-window.loadAllSections = window.loadAllSections || (() => {
-    document.querySelectorAll('defercontent').forEach(element => {
-        // Skip already processed elements
-        if (element.hasAttribute('data-processed')) return;
-        element.setAttribute('data-processed', 'true');
+// Function to load sections with 'defercontent' tag within a specific node
+window.loadAllSections = window.loadAllSections || ((node) => {
+    const elements = node ? [node, ...node.querySelectorAll('defercontent')] : document.querySelectorAll('defercontent');
+    elements.forEach(element => {
+        // Create JSON data from element attributes
+        const jsonData = {};
+        Array.from(element.attributes).forEach(attr => {
+            jsonData[attr.name] = attr.value;
+        });
 
         let dynamicUrl = window.location.href;
         const urlParts = dynamicUrl.split('/');
         if (!dynamicUrl.startsWith("/") && urlParts.length > 3) {
             dynamicUrl = '/' + urlParts.slice(3).join('/');
         }
-        console.log(dynamicUrl);
-        const tagName = element.tagName.toLowerCase();
+        const cacheKey = `${dynamicUrl}+options=${JSON.stringify(jsonData)}`;
 
-        // Create JSON data from element attributes
-        const jsonData = {};
-        Array.from(element.attributes).forEach(attr => {
-            if (attr.name !== 'data-processed') {
-                jsonData[attr.name] = attr.value;
-            }
-        });
+        // Skip if URL is already loaded or in process
+        if (window.loadedUrls[cacheKey]) return;
+
+        window.loadedUrls[cacheKey] = 'loading';
+        updateRealTimeBox();
 
         const fetchOptions = {
             method: 'POST',
@@ -42,61 +43,25 @@ window.loadAllSections = window.loadAllSections || (() => {
             body: JSON.stringify(jsonData)
         };
 
-        const cacheKey = `${dynamicUrl}+options=${JSON.stringify(jsonData)}`;
-        window.loadedUrls[cacheKey] = 'loading';
-        updateRealTimeBox();
-
         // Handle other tags
         const structure = element.getAttribute('structure') || false;
 
-        // download style for structure
-        if (structure && !structure.startsWith("style")) {
-            const urlParts = dynamicUrl.split("/");
-            let url = urlParts[1];
-            if (urlParts[1].startsWith("http") && urlParts.length > 3) {
-                url = urlParts.slice(3).join("/");
-                // if ends with /
-                if (url.endsWith("/")) url = url.slice(0, -1);
+        // Handle structure loading for non-style tags
+        /*
+        if (structure && structure !== 'style') {
+            if (!window.deferredCssSelectors.has(structure)) {
+                const styleDeferContent = document.createElement('defercontent');
+                styleDeferContent.setAttribute('query', 'pagestyle');
+                styleDeferContent.setAttribute('structure', 'style');
+                styleDeferContent.setAttribute('get-only-these-css-selectors', structure);
+                document.head.appendChild(styleDeferContent);
+                loadAllSections(styleDeferContent);
+                window.deferredCssSelectors.add(structure);
             }
-            const fullUrl = `/${url}/style.css`;
-            const structureCacheKey = `${fullUrl}+structure=${structure}+options=${JSON.stringify(jsonData)}`;  // Combine URL with serialized fetch options
-
-            window.loadedUrls[structureCacheKey] = 'loading';
-            updateRealTimeBox();
-
-            // Use fetch() to make a POST request (with additional parameters) to fetch the CSS
-            fetch(fullUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ ...jsonData, structure: structure })
-            })
-                .then(response => {
-                    if (!response.ok) { throw new Error(`Failed to load stylesheet: ${response.statusText}`); }
-                    return response.text(); // Get the response as text (CSS content)
-                })
-                .then(cssContent => {
-                    const styleTag = document.createElement('style');
-                    styleTag.innerHTML = cssContent;
-                    document.head.appendChild(styleTag);
-                    console.log(fullUrl, styleTag);
-                    window.loadedUrls[structureCacheKey] = 'loaded';
-                    updateRealTimeBox(); // Update real-time box after loading
-                })
-                .catch(error => {
-                    console.error('Error fetching CSS:', error);
-                    window.loadedUrls[structureCacheKey] = 'error';
-                    updateRealTimeBox();
-                });
-        }
-
-        window.loadedUrls[cacheKey] = 'loading';
-        updateRealTimeBox();
+        }*/
 
         // Display loading message
         element.innerHTML = '<span style="display:inline-block; opacity:0.5;">Loading content...</span>';
-        console.log(cacheKey, dynamicUrl, fetchOptions);
         fetch(dynamicUrl, fetchOptions)
             .then(res => res.text())
             .then(html => {
@@ -106,14 +71,12 @@ window.loadAllSections = window.loadAllSections || (() => {
                 // Check if response is a single style element
                 if (tempContainer.children.length === 1 && tempContainer.firstElementChild.tagName.toLowerCase() === 'style') {
                     const styleElement = tempContainer.firstElementChild;
-                    console.log("styleElement", styleElement);
                     document.head.appendChild(styleElement);
                     element.remove();
                 } else {
                     // Option 1: replace element with dynamic HTML
                     element.replaceWith(...tempContainer.childNodes);
                 }
-                console.log(dynamicUrl, html, tempContainer);
 
                 // Extract and execute all script tags
                 const scripts = element.querySelectorAll('script');
@@ -230,15 +193,13 @@ window.observer = window.observer || new MutationObserver((mutations) => {
                 if (node.nodeType === 1) { // Check if the node is an element
                     // Check the node itself if it's a 'defercontent' tag
                     if (node.tagName.toLowerCase() === 'defercontent') {
-                        loadAllSections();
+                        loadAllSections(node);
                         updateRealTimeBox();
                     }
                     // Check within the subtree of the node for any 'defercontent' tags
                     node.querySelectorAll('defercontent').forEach(subNode => {
-                        if (!subNode.hasAttribute('data-processed')) {
-                            loadAllSections();
-                            updateRealTimeBox();
-                        }
+                        loadAllSections(node);
+                        updateRealTimeBox();
                     });
                 }
             });
