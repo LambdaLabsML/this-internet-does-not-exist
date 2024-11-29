@@ -26,20 +26,23 @@ window.loadAllSections = window.loadAllSections || (() => {
         console.log(dynamicUrl);
         const tagName = element.tagName.toLowerCase();
 
-        // Prepare POST data from element attributes
-        const postData = new FormData();
+        // Create JSON data from element attributes
+        const jsonData = {};
         Array.from(element.attributes).forEach(attr => {
             if (attr.name !== 'data-processed') {
-                postData.append(attr.name, attr.value);
+                jsonData[attr.name] = attr.value;
             }
         });
 
         const fetchOptions = {
             method: 'POST',
-            body: postData
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(jsonData)
         };
 
-        const cacheKey = `${dynamicUrl}+options=${JSON.stringify(formDataToObject(postData))}`;
+        const cacheKey = `${dynamicUrl}+options=${JSON.stringify(jsonData)}`;
         window.loadedUrls[cacheKey] = 'loading';
         updateRealTimeBox();
 
@@ -97,7 +100,7 @@ window.loadAllSections = window.loadAllSections || (() => {
                     if (url.endsWith("/")) url = url.slice(0, -1);
                 }
                 const fullUrl = `/${url}/style.css`;
-                const structureCacheKey = `${fullUrl}+structure=${structure}+options=${JSON.stringify(formDataToObject(postData))}`;  // Combine URL with serialized fetch options
+                const structureCacheKey = `${fullUrl}+structure=${structure}+options=${JSON.stringify(jsonData)}`;  // Combine URL with serialized fetch options
 
                 window.loadedUrls[structureCacheKey] = 'loading';
                 updateRealTimeBox();
@@ -106,9 +109,9 @@ window.loadAllSections = window.loadAllSections || (() => {
                 fetch(fullUrl, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
+                        'Content-Type': 'application/json'
                     },
-                    body: structure  // Send the structure as raw text
+                    body: JSON.stringify({ ...jsonData, structure: structure })
                 })
                     .then(response => {
                         if (!response.ok) { throw new Error(`Failed to load stylesheet: ${response.statusText}`); }
@@ -138,7 +141,6 @@ window.loadAllSections = window.loadAllSections || (() => {
             fetch(dynamicUrl, fetchOptions)
                 .then(res => res.text())
                 .then(html => {
-                    // Option 1: replace element with dynamic HTML
                     const tempContainer = document.createElement('div');
                     tempContainer.innerHTML = html;
                     element.replaceWith(...tempContainer.childNodes);

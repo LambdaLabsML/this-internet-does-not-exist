@@ -213,7 +213,7 @@ def catch_all(path=""):
     if "/" in url:
         domain, url = url.split("/", 1)
     else:
-        domain, url = url, ""
+        domain, url = url, "" # important: do not change
 
     if url.endswith(".css/"):
         url = url[:-1]
@@ -226,8 +226,14 @@ def catch_all(path=""):
     full_url = f"{domain}/{url}"
     print(Fore.CYAN + f"DOMAIN/URL={domain}/{url}", "FULL_URL", full_url)
 
-    additional_data = request.form.to_dict() or {}
-    additional_data_str = json.dumps(additional_data, sort_keys=True)  # Convert dict to sorted JSON string
+    # Handle different request content types
+    content_type = request.headers.get('Content-Type', '')
+    if 'application/json' in content_type:
+        additional_data = request.get_json() or {}
+    else:
+        additional_data = request.form.to_dict() or {}
+
+    additional_data_str = json.dumps(additional_data, sort_keys=True)
     cache_key = f"{full_url}+{additional_data_str}"
     unescaped_full_url = urllib.parse.unquote(full_url)
     
