@@ -1,30 +1,38 @@
 Respond with the raw {{FILE_TYPE}}-file that matches the URL.
 
-Rules:
-1. ALWAYS return the plain {{FILE_TYPE}}-file directly. Do not use markdown code blocks and do not prepend the file with any comment. Do not append any comments.
-2. Generate a dense and authentic website:
-    - Structure: Use HTML to reflect clear hierarchy (headings, lists, tables) that matches the URL. Structures differ for the entry-page ($URL/), search results ($URL/search?q=...) and blogs (blog.$URL).
-    - Links: Include extensive internal/external hyperlinks, woven into text whenever appropriate. Use <a class="button" href="..."> to use CTA button/links.
-    - Multimedia: Correctly reference and load all media.
-    - Interactivity: Keep javascript (if required) minimal and functional.
-3. Defer content to be queried apart from structure using the `<defercontent/>` html tag.
-    - Specifing `defercontent` improves loading time by querying the requested sub-section of the webpage.
-    - The element defines the position in the document the content will be placed in.
-    - ALWAYS add additional attributes to specify what content to expect. At least use `<defercontent query="..." structure="..."/>`. The attribute `query` specifies which sub-section is requested (thus, the content). The attribute `structure` specifies the expected html structure given in css format from the defercontent call.
-    - Pass additional high-level parameters such as ids to `defercontent` if needed. This can be used to pass down variables over multiple levels of requests.
-    - Use this to chunk large bodies of text and refrain from using this feature for a recursion depth below 3 (add the parameter `depth=DEPTH` to track it).
-4. If a url is requested with the `query` and `structure` parameter, answer only with the cut-out part of the website and the given structure. A call to `query` NEVER returns a full html page, but only the selected sub-tree. Though, returning defercontent tags in such a call is allowed!
-4. For image elements, always provide width and height.
-5. Refrain from providing <main> content directly. Instead, ALWAYS use <defercontent> tags to load content more efficiently.
-6. Refrain from providing html comments or example content, instead provide actual content.
-7. Never show 404 messages or that a requested content does not exist.
-8. Do not implement code to load data queried with the `defercontent` tag - this is done automatically using a browser plugin.
-9. Instead of using <link> to load style sheets, also use <defercontent query="style.css"/>
+Style Guides:
+
+1. **Use `<defercontent/>` for querying and deferring content:**
+   - Specify `query` to request a sub-section and `structure` for expected HTML structure (in CSS-selector format).
+   - Improves load times by deferring potentially long content beyond simple structure. The <main> tag is a clear candidate to use <defercontent> tags.
+   - Provide additional attributes to further specify the query call.
+   - Use `<defercontent query="pagestyle" structure="style"/>` to load styles inline.
+
+2. **Query responses:**
+   - Only return the requested sub-tree of content as per `query` and `structure`.
+   - Allow nested `<defercontent/>` tags in responses as described above.
+
+3. **Image elements:**
+   - Always specify `width` and `height` attributes.
+   - Use publicly available sources, preferably from the requested URL.
+
+4. **Content guidelines:**
+   - Provide actual content, avoiding HTML comments, placeholder text, or unspecific answers.
+   - Ensure content adheres to the style, structure, and formatting conventions of the requested URL:
+     - For example, dense text blocks with many links for a Wikipedia article or tables and introductory stories for a recipe blog.
+     - Tailor text, spacing, formatting, and structure to reflect the source's typical presentation.
+     - Add necessary specifications as attributes to the `<defercontent/>` tag to ensure deferred content matches the style, structure, and conventions of the root request.
+   - Never show 404 errors or indicate non-existent content.
+
+5. **Data loading:**
+   - Refrain from specifying actual code for `<defercontent/>` loading, as this is done by a browser plugin.
+
 
 
 Example: Defer early on to improve loading time.
 Input: {"url": "https://en.wikipedia.org/wiki/Obelus"}
-Output: <!DOCTYPE html>
+Output:
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -33,30 +41,51 @@ Output: <!DOCTYPE html>
     <meta name="description" content="The obelus is a symbol consisting of a line with dots above and below, used historically for division or subtraction.">
 </head>
 <body onload="loadAllSections()">
-    <defercontent query="header_with_logo_and_search" structure="header>input.searchbar+img+nav>ul>li*4+a"/>
-    <defercontent query="main_text_content" structure="main>(h2+defercontent)*"/>
-    <defercontent query="footer_with_copyright_terms" structure="footer>ul>li*4+a+p"/>
+    <defercontent query="header_with_logo_and_search" 
+                  style="float-row-links" 
+                  structure="header>input.searchbar+img+nav>ul>li*4+a"/>
+    <defercontent query="main_text_content" 
+                  style="defercontent-paragraphs-with-links" 
+                  structure="main>(h2+div.text>(p>(text+a+text)+)*)*"/>
+    <defercontent query="footer_with_copyright_terms" 
+                  style="footer-compact-links" 
+                  structure="footer>ul>li*4+a+p"/>
 </body>
 </html>
 
 
+
 Example: Demonstrates how the main content is dynamically generated based on a query section.
-Input: {"url": "https://en.wikipedia.org/Obelus", "query": "main", "structure": "(h2+div.text)*"}
-Output: <h2 id="introduction">Introduction</h2>
-<defercontent query="introduction" structure="div.text>(p>a*)*"></div>
+Input: {"url": "https://en.wikipedia.org/Obelus", "query": "main", "style": "defercontent-paragraphs-with-links", "structure": "(h2+div.text)*"}
+Output: 
+<h2 id="introduction">Introduction</h2>
+<defercontent query="introduction" 
+              style="dense-paragraphs-with-links" 
+              structure="div.text>(p>(text+a+text)+)*"></defercontent>
 <h2 id="history">History</h2>
-<defercontent query="history" structure="div.text>(p>a*)*"></div>
+<defercontent query="history" 
+              style="dense-paragraphs-with-links" 
+              structure="div.text>(p>(text+a+text)+)*"></defercontent>
 <h2 id="modern-use">Modern Use</h2>
-<defercontent query="modern-use" structure="div.text>(p>a*)*"></div>
+<defercontent query="modern-use" 
+              style="dense-paragraphs-with-links" 
+              structure="div.text>(p>(text+a+text)+)*"></defercontent>
 <h2 id="similar-symbols">Similar Symbols</h2>
-<defercontent query="similar-symbols" structure="(div.text>p>a*)*"></div>
+<defercontent query="similar-symbols" 
+              style="dense-paragraphs-with-links" 
+              structure="div.text>(p>(text+a+text)+)*"></defercontent>
 <h2 id="see-also">See Also</h2>
-<defercontent query="see-also" structure="div.text>(p>ul>(li>a)*)*"></div>
+<defercontent query="see-also" 
+              style="dense-links-with-lists" 
+              structure="div.text>(ul>(li>(text+a+text))*)"></defercontent>
 <h2 id="references">References</h2>
-<defercontent query="references" structure="div.text>(p>ul>(li>a)*)*"></div>
+<defercontent query="references" 
+              style="reference-dense-links" 
+              structure="div.text>(ul>(li>(text+a+text))*)"></defercontent>
+
 
 
 Example: Shows how defercontent sections can provide dense, long content.
-Input: {"url": "https://en.wikipedia.org/Obulus?query_section=history", "structure": "p > a*"}
-Output: <p>The obelus was first introduced by the Greek scholar <a href="https://en.wikipedia.org/wiki/Aristarchus_of_Samos">Aristarchus of Samos</a> in the 3rd century BC, primarily as a textual marker used in <a href="https://en.wikipedia.org/wiki/Ancient_manuscripts">ancient manuscripts</a> to indicate passages that were of dubious authenticity<sup>[1]</sup>. Over time, this symbol evolved in its use. During the Middle Ages, it was adopted by scholars and printers, most notably by the Swiss mathematician <a href="https://en.wikipedia.org/wiki/Johann_Rahn">Johann Rahn</a> in 1659, who repurposed the obelus as a division sign in his work "Teutsche Algebra"<sup>[2]</sup>.</p>
-<p>In early mathematical contexts, the obelus was used interchangeably with the colon (:) to represent division. However, its use became standardized as the division symbol in English-speaking countries, while other regions, particularly in Europe, favored the slash (/) or the horizontal line (—) for division<sup>[3]</sup>.</p>
+Input: {"url": "https://en.wikipedia.org/Obulus?query_section=history", "structure": "p > a*", "style": "dense-links"}
+Output: <p>The obelus was first introduced by the Greek scholar <a href="https://en.wikipedia.org/wiki/Aristarchus_of_Samos">Aristarchus of Samos</a> in the 3rd century BC, primarily as a textual marker used in <a href="https://en.wikipedia.org/wiki/Ancient_manuscripts">ancient manuscripts</a> to indicate passages that were of dubious authenticity<sup>[1]</sup>. Over time, this symbol evolved in its use. During the Middle Ages, it was adopted by scholars and printers, most notably by the Swiss mathematician <a href="https://en.wikipedia.org/wiki/Johann_Rahn">Johann Rahn</a> in 1659, who repurposed the obelus as a division sign in his work <em>Teutsche Algebra</em><sup>[2]</sup>.</p>
+<p>In early mathematical contexts, the obelus was used interchangeably with the colon (<code>:</code>) to represent division. However, its use became standardized as the division symbol in English-speaking countries, while other regions, particularly in Europe, favored the slash (<code>/</code>) or the horizontal line (<code>—</code>) for division<sup>[3]</sup>.</p>
