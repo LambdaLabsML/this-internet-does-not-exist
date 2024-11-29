@@ -46,140 +46,97 @@ window.loadAllSections = window.loadAllSections || (() => {
         window.loadedUrls[cacheKey] = 'loading';
         updateRealTimeBox();
 
-        // Handle 'link' tags with rel='stylesheet'
-        if (tagName === 'link' && element.rel === 'stylesheet') {
-            fetch(dynamicUrl, fetchOptions)
-                .then(res => res.text())
-                .then(css => {
-                    const style = document.createElement('style');
-                    style.textContent = css;
-                    document.head.appendChild(style);
-                    element.remove();
-                    window.loadedUrls[cacheKey] = 'loaded';
-                    updateRealTimeBox(); // Update real-time box after loading
-                })
-                .catch(error => {
-                    console.error(error);
-                    window.loadedUrls[cacheKey] = 'error';
-                    updateRealTimeBox();
-                });
-        } else if (tagName === 'script') {
-            // Handle 'script' tags
-            fetch(dynamicUrl, fetchOptions)
-                .then(res => res.text())
-                .then(js => {
-                    const script = document.createElement('script');
-                    script.textContent = js;
-                    document.head.appendChild(script);
+        // Handle other tags
+        const structure = element.getAttribute('structure') || false;
 
-                    // Ensure the script is executed immediately after appending it to the head
-                    const clonedScript = document.createElement('script');
-                    clonedScript.type = 'text/javascript';
-                    clonedScript.text = script.text;
-                    document.body.appendChild(clonedScript);
-
-                    element.remove();
-                    window.loadedUrls[cacheKey] = 'loaded';
-                    updateRealTimeBox(); // Update real-time box after loading
-                })
-                .catch(error => {
-                    console.error(error);
-                    window.loadedUrls[cacheKey] = 'error';
-                    updateRealTimeBox();
-                });
-        } else {
-            // Handle other tags
-            const structure = element.getAttribute('structure') || false;
-
-            // download style for structure
-            if (structure && !structure.startsWith("style")) {
-                const urlParts = dynamicUrl.split("/");
-                let url = urlParts[1];
-                if (urlParts[1].startsWith("http") && urlParts.length > 3) {
-                    url = urlParts.slice(3).join("/");
-                    // if ends with /
-                    if (url.endsWith("/")) url = url.slice(0, -1);
-                }
-                const fullUrl = `/${url}/style.css`;
-                const structureCacheKey = `${fullUrl}+structure=${structure}+options=${JSON.stringify(jsonData)}`;  // Combine URL with serialized fetch options
-
-                window.loadedUrls[structureCacheKey] = 'loading';
-                updateRealTimeBox();
-
-                // Use fetch() to make a POST request (with additional parameters) to fetch the CSS
-                fetch(fullUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ ...jsonData, structure: structure })
-                })
-                    .then(response => {
-                        if (!response.ok) { throw new Error(`Failed to load stylesheet: ${response.statusText}`); }
-                        return response.text(); // Get the response as text (CSS content)
-                    })
-                    .then(cssContent => {
-                        const styleTag = document.createElement('style');
-                        styleTag.innerHTML = cssContent;
-                        document.head.appendChild(styleTag);
-                        console.log(fullUrl, styleTag);
-                        window.loadedUrls[structureCacheKey] = 'loaded';
-                        updateRealTimeBox(); // Update real-time box after loading
-                    })
-                    .catch(error => {
-                        console.error('Error fetching CSS:', error);
-                        window.loadedUrls[structureCacheKey] = 'error';
-                        updateRealTimeBox();
-                    });
+        // download style for structure
+        if (structure && !structure.startsWith("style")) {
+            const urlParts = dynamicUrl.split("/");
+            let url = urlParts[1];
+            if (urlParts[1].startsWith("http") && urlParts.length > 3) {
+                url = urlParts.slice(3).join("/");
+                // if ends with /
+                if (url.endsWith("/")) url = url.slice(0, -1);
             }
+            const fullUrl = `/${url}/style.css`;
+            const structureCacheKey = `${fullUrl}+structure=${structure}+options=${JSON.stringify(jsonData)}`;  // Combine URL with serialized fetch options
 
-            window.loadedUrls[cacheKey] = 'loading';
+            window.loadedUrls[structureCacheKey] = 'loading';
             updateRealTimeBox();
 
-            // Display loading message
-            element.innerHTML = '<span style="display:inline-block; opacity:0.5;">Loading content...</span>';
-            console.log(cacheKey, dynamicUrl, fetchOptions);
-            fetch(dynamicUrl, fetchOptions)
-                .then(res => res.text())
-                .then(html => {
-                    const tempContainer = document.createElement('div');
-                    tempContainer.innerHTML = html;
-                    
-                    // Check if response is a single style element
-                    if (tempContainer.children.length === 1 && tempContainer.firstElementChild.tagName.toLowerCase() === 'style') {
-                        const styleElement = tempContainer.firstElementChild;
-                        console.log("styleElement", styleElement);
-                        document.head.appendChild(styleElement);
-                        element.remove();
-                    } else {
-                        // Option 1: replace element with dynamic HTML
-                        element.replaceWith(...tempContainer.childNodes);
-                    }
-                    console.log(dynamicUrl, html, tempContainer);
-
-                    // Extract and execute all script tags
-                    const scripts = element.querySelectorAll('script');
-                    scripts.forEach(script => {
-                        const newScript = document.createElement('script');
-                        if (script.src) {
-                            // If the script has a src attribute, copy it and load the external script
-                            newScript.src = script.src;
-                            newScript.async = true;  // Preserve async behavior
-                        } else {
-                            // Inline script - copy the content
-                            newScript.textContent = script.textContent;
-                        }
-                        document.body.appendChild(newScript);  // Append script to body to execute
-                    });
-                    window.loadedUrls[cacheKey] = 'loaded';
+            // Use fetch() to make a POST request (with additional parameters) to fetch the CSS
+            fetch(fullUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ...jsonData, structure: structure })
+            })
+                .then(response => {
+                    if (!response.ok) { throw new Error(`Failed to load stylesheet: ${response.statusText}`); }
+                    return response.text(); // Get the response as text (CSS content)
+                })
+                .then(cssContent => {
+                    const styleTag = document.createElement('style');
+                    styleTag.innerHTML = cssContent;
+                    document.head.appendChild(styleTag);
+                    console.log(fullUrl, styleTag);
+                    window.loadedUrls[structureCacheKey] = 'loaded';
                     updateRealTimeBox(); // Update real-time box after loading
                 })
                 .catch(error => {
-                    console.error(error);
-                    window.loadedUrls[cacheKey] = 'error';
+                    console.error('Error fetching CSS:', error);
+                    window.loadedUrls[structureCacheKey] = 'error';
                     updateRealTimeBox();
                 });
         }
+
+        window.loadedUrls[cacheKey] = 'loading';
+        updateRealTimeBox();
+
+        // Display loading message
+        element.innerHTML = '<span style="display:inline-block; opacity:0.5;">Loading content...</span>';
+        console.log(cacheKey, dynamicUrl, fetchOptions);
+        fetch(dynamicUrl, fetchOptions)
+            .then(res => res.text())
+            .then(html => {
+                const tempContainer = document.createElement('div');
+                tempContainer.innerHTML = html;
+                
+                // Check if response is a single style element
+                if (tempContainer.children.length === 1 && tempContainer.firstElementChild.tagName.toLowerCase() === 'style') {
+                    const styleElement = tempContainer.firstElementChild;
+                    console.log("styleElement", styleElement);
+                    document.head.appendChild(styleElement);
+                    element.remove();
+                } else {
+                    // Option 1: replace element with dynamic HTML
+                    element.replaceWith(...tempContainer.childNodes);
+                }
+                console.log(dynamicUrl, html, tempContainer);
+
+                // Extract and execute all script tags
+                const scripts = element.querySelectorAll('script');
+                scripts.forEach(script => {
+                    const newScript = document.createElement('script');
+                    if (script.src) {
+                        // If the script has a src attribute, copy it and load the external script
+                        newScript.src = script.src;
+                        newScript.async = true;  // Preserve async behavior
+                    } else {
+                        // Inline script - copy the content
+                        newScript.textContent = script.textContent;
+                    }
+                    document.body.appendChild(newScript);  // Append script to body to execute
+                });
+                window.loadedUrls[cacheKey] = 'loaded';
+                updateRealTimeBox(); // Update real-time box after loading
+            })
+            .catch(error => {
+                console.error(error);
+                window.loadedUrls[cacheKey] = 'error';
+                updateRealTimeBox();
+            });
     });
 });
 
