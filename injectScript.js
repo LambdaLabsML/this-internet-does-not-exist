@@ -91,7 +91,8 @@ window.loadAllSections = window.loadAllSections || (() => {
             // Handle other tags
             const structure = element.getAttribute('structure') || false;
 
-            if (structure) {
+            // download style for structure
+            if (structure && !structure.startsWith("style")) {
                 const urlParts = dynamicUrl.split("/");
                 let url = urlParts[1];
                 if (urlParts[1].startsWith("http") && urlParts.length > 3) {
@@ -143,10 +144,18 @@ window.loadAllSections = window.loadAllSections || (() => {
                 .then(html => {
                     const tempContainer = document.createElement('div');
                     tempContainer.innerHTML = html;
-                    element.replaceWith(...tempContainer.childNodes);
-
-                    // Option 2: insert defercontent HTML into element
-                    // element.innerHTML = html;
+                    
+                    // Check if response is a single style element
+                    if (tempContainer.children.length === 1 && tempContainer.firstElementChild.tagName.toLowerCase() === 'style') {
+                        const styleElement = tempContainer.firstElementChild;
+                        console.log("styleElement", styleElement);
+                        document.head.appendChild(styleElement);
+                        element.remove();
+                    } else {
+                        // Option 1: replace element with dynamic HTML
+                        element.replaceWith(...tempContainer.childNodes);
+                    }
+                    console.log(dynamicUrl, html, tempContainer);
 
                     // Extract and execute all script tags
                     const scripts = element.querySelectorAll('script');
