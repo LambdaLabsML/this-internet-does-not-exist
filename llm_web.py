@@ -178,6 +178,14 @@ def get_parent_request_from_cache(url):
     parent_cache_key = f"{url}+{{}}"  # Empty JSON object as string
     return load_cached(parent_cache_key)
 
+def get_parent_request_without_key(url, additional_data, key):
+    """Get the cached response for a URL-only request without a specific key."""
+    if key in additional_data:
+        del additional_data[key]
+    additional_data_str_without_key = json.dumps(additional_data, sort_keys=True)
+    parent_cache_key = f"{url}+{additional_data_str_without_key}"
+    return load_cached(parent_cache_key)[0], additional_data_str_without_key
+
 
 # ------------ #
 # Flask Server #
@@ -238,20 +246,22 @@ def catch_all(path=""):
     unescaped_full_url = urllib.parse.unquote(full_url)
     
     # Check for parent request if additional data exists
-    parent_request = None
     parent_content = None
     if additional_data:
         parent_content, _ = get_parent_request_from_cache(full_url)
-        if parent_content:
-            parent_request = json.dumps({"url": full_url })
+        parent_request = json.dumps({"url": full_url })
     
     # Include parent request in the user request if available
     user_request_data = {"url": unescaped_full_url, **additional_data}
-    # if parent_request:
-        # user_request_data["parent_request"] = parent_request
-    
+    if "get-only-these-css-selectors" in additional_data:
+        css_parent_content, css_parent_request = get_parent_request_without_key(full_url, additional_data.copy(), "get-only-these-css-selectors")
+    else:
+        css_parent_request = None
+
     user_request = json.dumps(user_request_data, ensure_ascii=False)
-    if parent_content:
+    if css_parent_request and parent_content:
+        print(Fore.BLUE + "User requested css with parent knowledge:", user_request)
+    elif parent_content:
         print(Fore.BLUE + "User requested with parent knowledge:", user_request)
     else:
         print(Fore.BLUE + "User requested:", user_request)
@@ -269,7 +279,7 @@ def catch_all(path=""):
     content_type, _ = mimetypes.guess_type(full_url.split("?")[0])
     if content_type is None:
         content_type = 'text/html'
-    if ".css" in full_url:
+    if ".css" in full_url or css_parent_request:
         content_type = "text/css"
 
     # fill in data into prompt
@@ -292,8 +302,15 @@ def catch_all(path=""):
             model=args.model_name,
             messages=[
                 {"role": "system", "content": prompt},
+                # {"role": "user", "content": parent_request},
+                # {"role": "system", "content": parent_content},
+                {"role": "user", "content": css_parent_request},
+                {"role": "system", "content": css_parent_content},
+                {"role": "user", "content": user_request}
+            ] if parent_content and css_parent_request else [
+                {"role": "system", "content": prompt},
                 {"role": "user", "content": parent_request},
-                {"role": "user", "content": parent_content},
+                {"role": "system", "content": parent_content},
                 {"role": "user", "content": user_request}
             ] if parent_content else [
                 {"role": "system", "content": prompt},
