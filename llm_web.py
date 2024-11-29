@@ -17,6 +17,28 @@ from colorama import Fore, Style, init
 # Initialize colorama
 init(autoreset=True)
 
+# Store domain-specific requests
+domain_requests = {}
+
+def add_domain_request(domain: str, request_data: dict):
+    """Add a request to domain history, excluding any requests containing 'structure'"""
+    if domain not in domain_requests:
+        domain_requests[domain] = []
+    
+    # Check if 'structure' appears in any key or value
+    has_structure = any('query' in str(k).lower() or 
+                       (isinstance(v, str) and 'query' in v.lower())
+                       for k, v in request_data.items())
+    
+    if not has_structure and request_data:  # Only add if there's data and no structure
+        domain_requests[domain].append(request_data)
+
+def get_domain_history(domain: str) -> str:
+    """Get formatted history of domain requests"""
+    if domain not in domain_requests:
+        return ""
+    return json.dumps(domain_requests[domain], ensure_ascii=False)
+
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description="LLM Web Server")
@@ -253,12 +275,23 @@ def catch_all(path=""):
     
     # Include parent request in the user request if available
     user_request_data = {"url": unescaped_full_url, **additional_data}
+    
+    # Add request to domain history
+    add_domain_request(domain, user_request_data)
+    
     if "get-only-these-css-selectors" in additional_data:
         css_parent_content, css_parent_request = get_parent_request_without_key(full_url, additional_data.copy(), "get-only-these-css-selectors")
     else:
         css_parent_request = None
 
-    user_request = json.dumps(user_request_data, ensure_ascii=False)
+    # Prepend domain history to user request
+    domain_history = get_domain_history(domain)
+    user_request_with_history = {
+        "domain_history": domain_history,
+        "current_request": user_request_data
+    }
+    user_request = json.dumps(user_request_with_history, ensure_ascii=False)
+
     if css_parent_request and parent_content:
         print(Fore.BLUE + "User requested css with parent knowledge:", user_request)
     elif parent_content:

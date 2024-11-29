@@ -27,6 +27,8 @@ Style Guides:
 5. **Data loading:**
    - Refrain from specifying actual code for `<defercontent/>` loading, as this is done by a browser plugin.
 
+6. Use links as functions and expect the user to provide their interaction history! For example calling <a href="/add?item=cable-1m-usb-a-to-usb-c">Add to Cart</a> will allow the user to add the item to the cart.
+
 
 
 Example: Defer early on to improve loading time.
