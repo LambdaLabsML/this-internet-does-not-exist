@@ -1,107 +1,58 @@
 Respond with the raw {{FILE_TYPE}}-file that matches the URL.
 
 Rules:
-1. ALWAYS return the plain {{FILE_TYPE}}-file directly. Do not use markdown code blocks and do not prepend the file with any comment.
-2. Generate a dense and authentic website:
-    - Style: Match colors, fonts, spacing, layout to the base URL requested.
-    - Interactivity: Assume users hover over elements and use other elements according to their used cases.
-    - Colors: Properly chosen colors in elements such as text, headers, backgrounds are key in making website feel real. Choose colors according to real counterparts.
-    - Responsiveness: ALWAYS provide the styles for two resolutions: desktop and mobile.
-3. Refrain from using too many borders and boxes (unless this is part of the expected design language of the URL given).
-4. Refrain from returning body selectors other general selectors unless specifically asked.
-4. Requests with the `structure` argument request only parts of the css file. Its value gives additional information about the css selectors, IDs, and classes required for the requested sub-css file.
-
-
+1. ALWAYS return ONLY the raw {{FILE_TYPE}}-file content in a style-tag. No markdown formatting, no code blocks, no explanatory text.
+2. Generate a modern and responsive website:
+    - Layout: Use CSS Grid and Flexbox for layouts. Avoid floating elements.
+    - CSS Variables: Define root-level custom properties for colors, spacing, and typography.
+    - Responsive Design: Use mobile-first approach with min-width media queries.
+    - Modern Features: Utilize modern CSS features like clamp(), min(), max(), and gap.
+3. Include responsive breakpoints:
+    - Mobile: default (<768px)
+    - Tablet: @media (min-width: 768px)
+    - Desktop: @media (min-width: 1024px)
+    - Large Desktop: @media (min-width: 1440px)
+4. Follow modern CSS best practices:
+    - Use logical properties (margin-block, padding-inline)
+    - Implement container queries where appropriate
+    - Include prefers-color-scheme media queries
+    - Use modern reset/normalize patterns
 
 Example:
-Input: {"url": "https://en.wikipedia.org/style.css", "structure": "header#main-header+main#content+footer.footer-section"}
-Output: #main-header { background-color: #f8f9fa; padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
-#content { padding: 1rem; flex: 1; max-width: 800px; margin: 0 auto; }
-footer.footer-section { background-color: #f1f1f1; padding: 1rem 2rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
-@media (max-width: 768px) {
-    #main-header { flex-direction: column; align-items: flex-start; }
-    .footer-section { text-align: left; padding: 1rem; }
-    #content { padding: 1rem; max-width: 90%; }
+Input: {"url": "https://modern-site.com/style.css", "structure": "header#main-header+main#content"}
+Output:
+<style> 
+:root {
+    --primary-color: #4285F4;
+    --spacing-base: clamp(1rem, 2vw, 2rem);
+    --container-width: min(90vw, 1200px);
 }
 
-
-Input: {"url": "https://en.wikipedia.org/main.css", "structure": "main>(section>div.container>p.paragraph-class+p.paragraph-class)"}
-Output: main { padding: 1rem; flex: 1; max-width: 800px; margin: 0 auto; }
-main > section > div.container { padding: 2rem; background-color: #f8f9fa; }
-.container > p.paragraph-class { font-size: 1rem; line-height: 1.5; margin: 0 0 1rem 0; color: #555; }
-.container > p.paragraph-class + p.paragraph-class { margin-top: 0; margin-bottom: 1rem; }
-@media (max-width: 768px) {
-    main { padding: 1rem; max-width: 90%; }
-    .container { padding: 1rem; }
-    .paragraph-class { font-size: 0.9rem; }
+#main-header {
+    display: flex;
+    flex-direction: column;
+    padding: var(--spacing-base);
+    container-type: inline-size;
 }
 
-
-Input: {"url": "https://en.wikipedia.org/links.css", "structure": "nav#primary-nav>ul.nav-list>li.nav-item+li.nav-item>a"} Output: #primary-nav { background-color: #333; padding: 1rem 2rem; }
-#primary-nav > ul.nav-list { list-style: none; padding: 0; margin: 0; display: flex; }
-.nav-list > li.nav-item { margin-right: 1rem; }
-.nav-list > li.nav-item + li.nav-item { margin-left: 0.5rem; }
-.nav-list > li.nav-item > a { color: white; text-decoration: none; padding: 0.5rem 1rem; background-color: #444; border-radius: 0.25rem; }
-.nav-list > li.nav-item > a
-{ background-color: #555; }
-@media (max-width: 768px) {
-    #primary-nav { padding: 0.5rem 1rem; }
-    .nav-list { flex-direction: column; }
-    .nav-item { margin-bottom: 0.5rem; }
+@container (min-width: 768px) {
+    #main-header {
+        flex-direction: row;
+        justify-content: space-between;
+    }
 }
 
-Input: {"url": "https://en.wikipedia.org/references.css", "structure": "div.references-wrapper>ol#reference-list>li.reference-item+a[href]"}
-Output: .references-wrapper { padding: 2rem; background-color: #f9f9f9; }
-#reference-list { list-style-type: decimal; padding-left: 2rem; margin-bottom: 1.5rem; }
-#reference-list > li.reference-item { margin-bottom: 0.5rem; }
-#reference-list > li.reference-item + li.reference-item { margin-top: 0.5rem; }
-#reference-list > li.reference-item > a[href] { color: #0066cc; text-decoration: none; }
-#reference-list > li.reference-item > a[href]
-{ text-decoration: underline; }
-@media (max-width: 768px) { #reference-list { padding-left: 1rem; }
-    .reference-item { font-size: 0.9rem; }
+#content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: var(--spacing-base);
+    margin-inline: auto;
+    width: var(--container-width);
 }
 
-
-Color Schemes:
-Here is a list of colorschemes of famous websites in the format Name, primary, secondary.
-Google: #4285F4, #FFFFFF
-Wikipedia: #FFFFFF, #000000
-YouTube: #FF0000, #FFFFFF
-Facebook: #3b5998, #FFFFFF
-Twitter: #1DA1F2, #FFFFFF
-Instagram: #E1306C, #FFFFFF
-LinkedIn: #0077B5, #FFFFFF
-Reddit: #FF4500, #FFFFFF
-Pinterest: #BD081C, #FFFFFF
-Tumblr: #35465C, #FFFFFF
-Quora: #B92B27, #FFFFFF
-GitHub: #333333, #FFFFFF
-Stack Overflow: #F48024, #FFFFFF
-Medium: #00ab6c, #FFFFFF
-Twitch: #6441A4, #FFFFFF
-Netflix: #E50914, #FFFFFF
-Spotify: #1DB954, #FFFFFF
-Slack: #4A154B, #FFFFFF
-Dropbox: #0061FF, #FFFFFF
-Airbnb: #FF5A5F, #FFFFFF
-Trello: #0079BF, #FFFFFF
-Asana: #273347, #FFFFFF
-Behance: #1769FF, #FFFFFF
-Dribbble: #EA4C89, #FFFFFF
-Figma: #F24E1E, #FFFFFF
-Canva: #00C4CC, #FFFFFF
-SoundCloud: #FF5500, #FFFFFF
-Vimeo: #1AB7EA, #FFFFFF
-DeviantArt: #05CC47, #FFFFFF
-Goodreads: #663300, #FFFFFF
-Product Hunt: #DA552F, #FFFFFF
-Hacker News: #FF6600, #FFFFFF
-Y Combinator: #F0652F, #FFFFFF
-Kickstarter: #2BDE73, #FFFFFF
-Indiegogo: #EB1478, #FFFFFF
-Patreon: #F96854, #FFFFFF
-Etsy: #F16521, #FFFFFF
-Shopify: #96BF48, #FFFFFF
-Alibaba: #FF6A00, #FFFFFF
-Amazon: #FF9900, #FFFFFF
+@media (prefers-color-scheme: dark) {
+    :root {
+        --primary-color: #8ab4f8;
+    }
+}
+</style> 
