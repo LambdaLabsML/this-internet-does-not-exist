@@ -47,7 +47,6 @@ window.loadAllSections = window.loadAllSections || ((node) => {
         const structure = element.getAttribute('structure') || false;
 
         // Handle structure loading for non-style tags
-        /*
         if (structure && structure !== 'style') {
             if (!window.deferredCssSelectors.has(structure)) {
                 const styleDeferContent = document.createElement('defercontent');
@@ -58,7 +57,7 @@ window.loadAllSections = window.loadAllSections || ((node) => {
                 loadAllSections(styleDeferContent);
                 window.deferredCssSelectors.add(structure);
             }
-        }*/
+        }
 
         // Display loading message
         element.innerHTML = '<span style="display:inline-block; opacity:0.5;">Loading content...</span>';
