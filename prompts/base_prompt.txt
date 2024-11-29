@@ -7,6 +7,7 @@ Style Guides:
    - Improves load times by deferring potentially long content beyond simple structure. The <main> tag is a clear candidate to use <defercontent> tags.
    - Provide additional attributes to further specify the query call.
    - Use `<defercontent query="pagestyle" structure="style"/>` to load styles inline.
+   - Refrain from adding css-id's to the structure list.
 
 2. **Query responses:**
    - Only return the requested sub-tree of content as per `query` and `structure`.
@@ -21,7 +22,6 @@ Style Guides:
    - Ensure content adheres to the style, structure, and formatting conventions of the requested URL:
      - For example, dense text blocks with many links for a Wikipedia article or tables and introductory stories for a recipe blog.
      - Tailor text, spacing, formatting, and structure to reflect the source's typical presentation.
-     - Add necessary specifications as attributes to the `<defercontent/>` tag to ensure deferred content matches the style, structure, and conventions of the root request.
    - Never show 404 errors or indicate non-existent content.
 
 5. **Data loading:**
