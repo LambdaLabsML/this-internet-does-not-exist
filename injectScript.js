@@ -125,21 +125,15 @@ function updateRealTimeBox() {
                 default:
                     color = 'white';
             }
-            return `<div style="color:${color};">${key} : ${status}</div>`;
+            const optionsIndex = key.indexOf('options=');
+            const displayKey = optionsIndex !== -1 ? key.substring(optionsIndex + 8) : key;
+            return `<div style="color:${color};">${displayKey} : ${status}</div>`;
         });
 
     box.innerHTML = `
-        <strong>Cache Keys:</strong><br>
+        <strong>LLM Web Logs</strong><br>
         ${deferContentStatus.join('<br>')}
     `;
-
-    // Automatically collapse the box to 100px when all keys are loaded
-    const allLoaded = Object.values(window.loadedUrls).every(status => status === 'loaded');
-    if (allLoaded && window.showLoaded) {
-        box.style.width = '80%';
-    } else {
-        box.style.width = '100px';
-    }
 }
 
 // Create and style the real-time box
@@ -149,7 +143,7 @@ function createRealTimeBox() {
     box.style.position = 'fixed';
     box.style.bottom = '0';
     box.style.right = '0';
-    box.style.width = '80%'; // Increased width from 300px to 400px
+    box.style.width = '120px'; // Increased width from 300px to 400px
     box.style.maxHeight = '200px';
     box.style.overflowY = 'auto';
     box.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
@@ -164,24 +158,10 @@ function createRealTimeBox() {
 
     box.onclick = () => {
         window.showLoaded = !window.showLoaded;
-        box.style.width = !window.showLoaded ? '100px' : '80%';
+        box.style.width = !window.showLoaded ? '120px' : '80%';
         updateRealTimeBox();
     };
 
-    const toggleButton = document.createElement('button');
-    toggleButton.textContent = 'Show/Hide URLs';
-    toggleButton.style.position = 'absolute';
-    toggleButton.style.top = '-30px';
-    toggleButton.style.right = '0';
-    toggleButton.style.zIndex = '1001';
-    toggleButton.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-    toggleButton.style.color = 'white';
-    toggleButton.style.border = 'none';
-    toggleButton.style.padding = '5px 10px';
-    toggleButton.style.cursor = 'pointer';
-    toggleButton.style.borderRadius = '5px';
-
-    document.body.appendChild(toggleButton);
     document.body.appendChild(box);
 }
 
